@@ -81,10 +81,13 @@ export class MailService {
     // In development, redirect non-owner recipients to the owner so the mail appears in Resend dashboard.
     const RESEND_TEST_OWNER = "norbeylama@gmail.com"
     const isTestingMode = this.appConfig.env !== "production"
-    const shouldRedirectToOwner = isTestingMode && options.to.toLowerCase() !== RESEND_TEST_OWNER.toLowerCase()
+    const shouldRedirectToOwner =
+      isTestingMode && options.to.toLowerCase() !== RESEND_TEST_OWNER.toLowerCase()
 
     const effectiveTo = shouldRedirectToOwner ? RESEND_TEST_OWNER : options.to
-    const effectiveSubject = shouldRedirectToOwner ? `[${options.to}] ${options.subject}` : options.subject
+    const effectiveSubject = shouldRedirectToOwner
+      ? `[${options.to}] ${options.subject}`
+      : options.subject
     const effectiveText = shouldRedirectToOwner
       ? `Intended recipient: ${options.to}\n\n${options.text}`
       : options.text
@@ -123,7 +126,10 @@ export class MailService {
       if (!res.ok) {
         const body = await res.text().catch(() => "")
         // Never bubble transport failures into user-facing flows.
-        this.logger.error({ status: res.status, body, to: options.to, effectiveTo }, "Resend delivery failed")
+        this.logger.error(
+          { status: res.status, body, to: options.to, effectiveTo },
+          "Resend delivery failed",
+        )
         // In development, also log the email content so verification can be completed without a verified domain
         if (this.appConfig.env !== "production") {
           this.logger.warn(
@@ -141,7 +147,10 @@ export class MailService {
         }
       } else {
         const resBody = await res.text().catch(() => "")
-        this.logger.log({ to: options.to, effectiveTo, subject: options.subject, resBody }, "email sent via Resend")
+        this.logger.log(
+          { to: options.to, effectiveTo, subject: options.subject, resBody },
+          "email sent via Resend",
+        )
       }
     } catch (err) {
       this.logger.error({ err }, `Failed to send email to ${options.to}`)

@@ -9,15 +9,14 @@ export function useResetPasswordMutation() {
   return useMutation<ResetPasswordMutation.AxiosResponse, ResetPasswordMutation.ErrorResponse, ResetPasswordMutation.Payload>(
     (payload) => authApiService.resetPassword(payload),
     {
-      onSuccess: (data) => {
-        const message = data.data.message
-        toast.success(message ?? "Password reset successfully")
+      onSuccess: (response) => {
+        toast.success(response.data.message)
         void navigate({ to: "/auth/login" })
       },
       onError: (error: ResetPasswordMutation.ErrorResponse) => {
-        const rawMessage = error.response?.data.message
-        const message = Array.isArray(rawMessage) ? rawMessage.join(", ") : rawMessage
-        toast.error(message ?? error.response?.data.error ?? "Failed to reset password")
+        const rawMessage = error.response?.data?.message
+        const message = Array.isArray(rawMessage) ? rawMessage.join(", ") : (rawMessage ?? error.response?.data?.error ?? error.message)
+        toast.error(message ?? "Failed to reset password")
       },
     },
   )

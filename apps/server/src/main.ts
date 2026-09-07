@@ -25,13 +25,20 @@ async function bootstrap(): Promise<void> {
     helmet({
       contentSecurityPolicy: config.env === "production" ? undefined : false, // API responses only
       crossOriginResourcePolicy: { policy: "same-site" },
-      hsts: config.env === "production" ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+      hsts:
+        config.env === "production"
+          ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+          : false,
       noSniff: true,
       referrerPolicy: { policy: "no-referrer" },
     }),
   )
   // Prevent clickjacking: API never renders in an iframe
-  app.use(((_req: unknown, res: { setHeader: (k: string, v: string) => void }, next: () => void) => {
+  app.use(((
+    _req: unknown,
+    res: { setHeader: (k: string, v: string) => void },
+    next: () => void,
+  ) => {
     res.setHeader("X-Frame-Options", "DENY")
     next()
   }) as never)

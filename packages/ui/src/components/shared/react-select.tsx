@@ -123,7 +123,7 @@ function ReactSelect({
 }: ReactSelectProps) {
   const isControlled = value !== undefined
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? "")
-  const currentValue = isControlled ? (value as string) : internalValue
+  const currentValue = isControlled ? value : internalValue
 
   const isDisabledFinal = isDisabled ?? disabled
   const isSearchableFinal = isSearchable ?? searchable
@@ -186,18 +186,18 @@ function ReactSelect({
     noOptionsMessage: () => noOptionsMessage ?? emptyText,
     loadingMessage: () => loadingMessage,
     isOptionDisabled: (opt: ReactSelectOption) => !!opt.disabled || !!opt.isDisabled,
-  } as const
+  }
 
   // Async mode when apiUrl or loadOptions is provided
   if (apiUrl || loadOptions) {
     return (
       <AsyncSelect<ReactSelectOption, false>
         {...commonProps}
-        value={selectedOption as never}
-        defaultOptions={defaultOptions as never}
+        value={selectedOption}
+        defaultOptions={defaultOptions}
         loadOptions={fetcher}
         cacheOptions={cacheOptions}
-        onChange={handleChange as never}
+        onChange={handleChange}
       />
     )
   }
@@ -205,9 +205,9 @@ function ReactSelect({
   return (
     <Select<ReactSelectOption, false>
       {...commonProps}
-      value={selectedOption as never}
+      value={selectedOption}
       options={options}
-      onChange={handleChange as never}
+      onChange={handleChange}
     />
   )
 }

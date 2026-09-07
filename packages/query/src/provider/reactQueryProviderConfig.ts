@@ -1,5 +1,5 @@
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryClient } from '@tanstack/react-query';
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister"
+import { QueryClient } from "@tanstack/react-query"
 
 export const reactQueryClient = new QueryClient({
   defaultOptions: {
@@ -12,11 +12,11 @@ export const reactQueryClient = new QueryClient({
       refetchOnMount: false,
     },
   },
-});
+})
 
 export const reactQueryPersister = createAsyncStoragePersister({
-  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-  key: 'react-query',
+  storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  key: "react-query",
   serialize: (data) => JSON.stringify(data),
   deserialize: (str) => JSON.parse(str),
-});
+})

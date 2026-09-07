@@ -10,8 +10,10 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@workspace/ui/components/design/tooltip"
 import { Icon } from "@workspace/ui/components/shared/icon"
 import { cn } from "@workspace/ui/lib/utils"
-import type { SessionUser } from "#/lib/session"
 import * as React from "react"
+import ThemeToggle from "#/components/ThemeToggle"
+import type { SessionUser } from "#/lib/session"
+
 
 type NavItem = {
   label: string
@@ -290,7 +292,11 @@ export function AuthenticatedShell({ user, onLogout, onLogoutAll, isLoggingOut, 
             </Button>
           )}
           <span className="font-medium text-sm truncate">Admin Dashboard</span>
-          <div className="ml-auto hidden sm:flex items-center gap-2 text-xs text-muted-foreground truncate max-w-[200px]">{user.email}</div>
+          <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
+            <span className="hidden sm:flex text-xs text-muted-foreground truncate max-w-[200px]">{user.email}</span>
+          </div>
+
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-6 bg-muted/20 overflow-auto">{children}</div>
       </div>

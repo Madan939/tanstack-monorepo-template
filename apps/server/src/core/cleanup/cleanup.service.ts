@@ -25,11 +25,14 @@ export class CleanupService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit(): void {
     // Stagger first run to avoid boot contention
-    this.initialTimeout = setTimeout(() => {
-      void this.runOnce()
-      this.timer = setInterval(() => void this.runOnce(), 60 * 60 * 1000) // every hour
-      this.timer.unref?.()
-    }, 5 * 60 * 1000)
+    this.initialTimeout = setTimeout(
+      () => {
+        void this.runOnce()
+        this.timer = setInterval(() => void this.runOnce(), 60 * 60 * 1000) // every hour
+        this.timer.unref?.()
+      },
+      5 * 60 * 1000,
+    )
     this.initialTimeout.unref?.()
     this.logger.info("cleanup scheduler armed (interval=1h, initial delay=5m)")
   }
@@ -43,7 +46,9 @@ export class CleanupService implements OnModuleInit, OnModuleDestroy {
     const now = new Date()
     try {
       const [expiredSessions, expiredTokens] = await Promise.all([
-        this.prisma.session.deleteMany({ where: { expiresAt: { lt: now }, revokedAt: { not: null } } }),
+        this.prisma.session.deleteMany({
+          where: { expiresAt: { lt: now }, revokedAt: { not: null } },
+        }),
         this.prisma.token.deleteMany({ where: { expiresAt: { lt: now } } }),
       ])
       // Also purge revoked sessions that are past expiry + grace period (7 days)
@@ -53,7 +58,10 @@ export class CleanupService implements OnModuleInit, OnModuleDestroy {
       })
       const totalSessions = expiredSessions.count + staleRevoked.count
       if (totalSessions > 0 || expiredTokens.count > 0) {
-        this.logger.info({ totalSessions, expiredTokens: expiredTokens.count }, "cleanup purged expired rows")
+        this.logger.info(
+          { totalSessions, expiredTokens: expiredTokens.count },
+          "cleanup purged expired rows",
+        )
       }
     } catch (err) {
       this.logger.error({ err }, "cleanup run failed")

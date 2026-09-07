@@ -12,4 +12,9 @@ export const ENDPOINTS = {
     LOGOUT_ALL: "/auth/logout-all",
     ONBOARDING: "/user/onboarding",
   },
+  TURNSTILE: {
+    CONFIG: "/turnstile/config",
+    VERIFY: "/turnstile/verify",
+  },
 } as const
+

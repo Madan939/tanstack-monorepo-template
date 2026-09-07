@@ -32,7 +32,7 @@ function makeConfig(): AppConfig {
       lockoutMaxAttempts: 5,
       lockoutTtlMinutes: 15,
       emailVerificationTtlHours: 24,
-    emailVerificationTtlMinutes: 10,
+      emailVerificationTtlMinutes: 10,
       passwordResetTtlMinutes: 15,
     },
   }

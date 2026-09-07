@@ -16,10 +16,10 @@ export class BaseApiService {
     return this.api.post(url, data, config) as unknown as Promise<TResponse>
   }
 
-  async get<
-    TData = unknown,
-    TResponse extends AxiosResponse<TData> = AxiosResponse<TData>,
-  >(url: string, config?: AxiosRequestConfig): Promise<TResponse> {
+  async get<TData = unknown, TResponse extends AxiosResponse<TData> = AxiosResponse<TData>>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<TResponse> {
     return this.api.get(url, config) as unknown as Promise<TResponse>
   }
 

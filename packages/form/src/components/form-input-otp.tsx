@@ -1,8 +1,4 @@
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@workspace/ui/components/design/input-otp"
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@workspace/ui/components/design/input-otp"
 import * as React from "react"
 import type { Control, FieldPath, FieldValues } from "react-hook-form"
 

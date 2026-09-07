@@ -1,9 +1,9 @@
 import {
-  dehydrate,
   type DehydratedState,
+  dehydrate,
   type FetchQueryOptions,
   QueryClient,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query"
 
 const getServerQueryClient = () =>
   new QueryClient({
@@ -17,12 +17,10 @@ const getServerQueryClient = () =>
         refetchOnMount: false,
       },
     },
-  });
+  })
 
-export async function prefetchQueries(
-  queries: FetchQueryOptions[],
-): Promise<DehydratedState> {
-  const queryClient = getServerQueryClient();
+export async function prefetchQueries(queries: FetchQueryOptions[]): Promise<DehydratedState> {
+  const queryClient = getServerQueryClient()
 
   await Promise.all(
     queries.map(({ queryKey, queryFn }) =>
@@ -32,7 +30,7 @@ export async function prefetchQueries(
         staleTime: 1000 * 60 * 5,
       }),
     ),
-  );
+  )
 
-  return dehydrate(queryClient);
+  return dehydrate(queryClient)
 }

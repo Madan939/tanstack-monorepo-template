@@ -1,13 +1,13 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query"
 
 export const useQueryClear = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   const clearAllQueries = () => {
-    queryClient.clear();
-    queryClient.resetQueries();
-    queryClient.getMutationCache().clear();
-  };
+    queryClient.clear()
+    queryClient.resetQueries()
+    queryClient.getMutationCache().clear()
+  }
 
-  return { clearAllQueries };
-};
+  return { clearAllQueries }
+}

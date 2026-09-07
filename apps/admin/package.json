@@ -11,7 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "biome format",
-    "lint": "biome lint",
+    "lint": "biome check ./src",
     "check": "biome check",
     "typecheck": "tsc --noEmit"
   },

@@ -1,1 +1,1 @@
-export { prefetchQueries } from './prefetch';
+export { prefetchQueries } from "./prefetch"

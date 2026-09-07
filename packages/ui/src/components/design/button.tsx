@@ -180,7 +180,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // Normalize isPending icon fallback: use loader-like icon; we use svg spin via Icon if available else fallback
     const buttonNode = (
       <Comp
-        ref={ref as React.Ref<HTMLButtonElement>}
+        ref={ref}
         type="button"
         data-slot="button"
         data-variant={variant}
@@ -201,11 +201,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonVariants({
             variant,
-            size: isIconOnly
-              ? size === "default"
-                ? "icon"
-                : (size as VariantProps<typeof buttonVariants>["size"])
-              : size,
+            size: isIconOnly ? (size === "default" ? "icon" : size) : size,
             className,
           }),
         )}

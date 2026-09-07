@@ -1,5 +1,5 @@
-export { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form"
 export type { FieldValues, Path, UseFormReturn } from "react-hook-form"
+export { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form"
 export * from "./components"
 export * from "./hooks"
 export * from "./lib"

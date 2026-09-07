@@ -1,4 +1,4 @@
-import { Typography } from "@workspace/ui/components/shared/typography"
+import { Typography } from "@workspace/ui"
 
 type FormHeaderProps = {
   heading: string

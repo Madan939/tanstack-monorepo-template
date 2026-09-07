@@ -52,7 +52,7 @@ const Icon = React.forwardRef<SVGSVGElement, IconProps>(
     },
     ref,
   ) => {
-    const Svg = icons[name]
+    const Svg = icons[name] as React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
     if (!Svg) {
       console.warn(`[Icon] Unknown icon name: "${name}"`)
       return null
@@ -66,7 +66,7 @@ const Icon = React.forwardRef<SVGSVGElement, IconProps>(
         ref={ref}
         width={size}
         height={size}
-        className={cn(shouldMirror && "[[dir=rtl]_&]:scale-x-[-1]", className as string)}
+        className={cn(shouldMirror && "[[dir=rtl]_&]:scale-x-[-1]", className)}
         // WAI-ARIA: decorative → aria-hidden, semantic → role="img" + aria-label
         aria-hidden={isDecorative ? true : undefined}
         role={isDecorative ? undefined : "img"}

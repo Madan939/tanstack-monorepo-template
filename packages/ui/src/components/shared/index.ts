@@ -1,3 +1,4 @@
+export { Toaster, toast } from "sonner"
 export { Icon } from "./icon"
 export {
   ReactMultiSelect,
@@ -21,5 +22,3 @@ export {
   type TypographyProps,
   typographyVariants,
 } from "./typography"
-export { toast } from "sonner"
-export { Toaster } from "sonner"

@@ -3,10 +3,9 @@ import { Button } from "@workspace/ui"
 
 type ResetPasswordFormProps = {
   isPending?: boolean
-  error?: string | null
 }
 
-export function ResetPasswordForm({ isPending, error }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ isPending }: ResetPasswordFormProps) {
   return (
     <div className="grid gap-4">
       <FormInput name="token" label="Reset token" required placeholder="Paste token from email" />
@@ -18,11 +17,6 @@ export function ResetPasswordForm({ isPending, error }: ResetPasswordFormProps) 
         autoComplete="new-password"
         description="12+ chars, upper/lower, number & symbol"
       />
-      {error ? (
-        <p role="alert" className="text-destructive text-sm">
-          {error}
-        </p>
-      ) : null}
       <Button type="submit" className="w-full" disabled={isPending}>
         Reset password
       </Button>
