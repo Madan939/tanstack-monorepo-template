@@ -137,7 +137,7 @@ function ReactMultiSelect({
 }: ReactMultiSelectProps) {
   const isControlled = value !== undefined
   const [internalValue, setInternalValue] = React.useState<string[]>(defaultValue)
-  const currentValue = isControlled ? (value as string[]) : internalValue
+  const currentValue = isControlled ? value : internalValue
 
   const isDisabledFinal = isDisabled ?? disabled
   const isSearchableFinal = isSearchable ?? searchable
@@ -170,7 +170,7 @@ function ReactMultiSelect({
   const selectedOptions = React.useMemo(() => {
     return currentValue
       .map((val) => options.find((o) => o.value === val) ?? { value: val, label: val })
-      .filter(Boolean) as ReactMultiSelectOption[]
+      .filter(Boolean)
   }, [currentValue, options])
 
   const handleChange = (newValue: MultiValue<ReactMultiSelectOption>) => {
@@ -193,17 +193,17 @@ function ReactMultiSelect({
     noOptionsMessage: () => noOptionsMessage ?? emptyText,
     loadingMessage: () => loadingMessage,
     isOptionDisabled: (opt: ReactMultiSelectOption) => !!opt.disabled || !!opt.isDisabled,
-  } as const
+  }
 
   if (apiUrl || loadOptions) {
     return (
       <AsyncSelect<ReactMultiSelectOption, true>
         {...commonProps}
-        value={selectedOptions as never}
-        defaultOptions={defaultOptions as never}
+        value={selectedOptions}
+        defaultOptions={defaultOptions}
         loadOptions={fetcher}
         cacheOptions={cacheOptions}
-        onChange={handleChange as never}
+        onChange={handleChange}
       />
     )
   }
@@ -211,9 +211,9 @@ function ReactMultiSelect({
   return (
     <Select<ReactMultiSelectOption, true>
       {...commonProps}
-      value={selectedOptions as never}
+      value={selectedOptions}
       options={options}
-      onChange={handleChange as never}
+      onChange={handleChange}
     />
   )
 }

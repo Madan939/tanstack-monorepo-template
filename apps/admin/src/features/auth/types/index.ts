@@ -1,3 +1,4 @@
+export * from "./captcha.types"
 export * from "./forgot-password-mutation.types"
 export * from "./login-mutation.types"
 export * from "./logout-mutation.types"
@@ -8,3 +9,4 @@ export * from "./public-user.types"
 export * from "./register-mutation.types"
 export * from "./reset-password-mutation.types"
 export * from "./verify-email-mutation.types"
+

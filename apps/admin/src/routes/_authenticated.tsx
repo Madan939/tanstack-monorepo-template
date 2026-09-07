@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect, useRouter } from "@tanstack/react-router"
-import { useLogoutAllMutation, useLogoutMutation } from "#/features/auth/hooks/mutation"
+import { useEffect } from "react"
 import { AuthenticatedShell } from "#/components/app-sidebar"
+import { useLogoutAllMutation, useLogoutMutation } from "#/features/auth/hooks/mutation"
 import { fetchSession } from "../lib/session"
 
 export const Route = createFileRoute("/_authenticated")({
@@ -43,6 +44,16 @@ function AuthenticatedLayout() {
   const logoutMutation = useLogoutMutation()
   const logoutAllMutation = useLogoutAllMutation()
   const isLoggingOut = logoutMutation.isPending || logoutAllMutation.isPending
+
+  useEffect(() => {
+    return () => {
+      // Clear theme styles when navigating away from protected pages
+      const root = document.documentElement
+      root.classList.remove("light", "dark")
+      root.removeAttribute("data-theme")
+      root.style.colorScheme = ""
+    }
+  }, [])
 
   const handleLogout = () => {
     if (isLoggingOut) return

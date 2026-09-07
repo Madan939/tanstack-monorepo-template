@@ -1,11 +1,11 @@
-'use client';
+"use client"
 
 import {
   type DefaultError,
   type QueryKey,
   type UseSuspenseQueryOptions,
   useSuspenseQuery as useTanstackSuspenseQuery,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query"
 
 export function useSuspenseQuery<
   TQueryFnData = unknown,
@@ -18,7 +18,7 @@ export function useSuspenseQuery<
   params?: TParams,
   options?: Omit<
     UseSuspenseQueryOptions<TQueryFnData, TError, TData, QueryKey>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return useTanstackSuspenseQuery<TQueryFnData, TError, TData, QueryKey>({
@@ -30,5 +30,5 @@ export function useSuspenseQuery<
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     ...options,
-  });
+  })
 }

@@ -91,10 +91,7 @@ export class AuthService {
       } catch (err) {
         // Race condition: concurrent registration with same email hits unique constraint.
         // Return generic message to prevent enumeration (same as duplicate case).
-        if (
-          err instanceof Prisma.PrismaClientKnownRequestError &&
-          err.code === "P2002"
-        ) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
           this.logger.warn({ email: dto.email }, "concurrent registration race - returning generic")
           // Fall through to generic response
         } else {
@@ -373,16 +370,30 @@ export class AuthService {
       const expiresAt = new Date(Date.now() + ttlMs)
       try {
         await this.prisma.$transaction(async (tx) => {
-          await tx.token.deleteMany({ where: { userId: user.id, type: TokenType.EMAIL_VERIFICATION } })
+          await tx.token.deleteMany({
+            where: { userId: user.id, type: TokenType.EMAIL_VERIFICATION },
+          })
           await tx.token.create({
-            data: { userId: user.id, type: TokenType.EMAIL_VERIFICATION, tokenHash: hash, expiresAt },
+            data: {
+              userId: user.id,
+              type: TokenType.EMAIL_VERIFICATION,
+              tokenHash: hash,
+              expiresAt,
+            },
           })
         })
         await this.mailService.sendVerificationEmail(user.email, code)
         return
       } catch (err) {
-        if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002" && attempt < 4) {
-          this.logger.warn({ userId: user.id, attempt }, "verification code hash collision, retrying")
+        if (
+          err instanceof Prisma.PrismaClientKnownRequestError &&
+          err.code === "P2002" &&
+          attempt < 4
+        ) {
+          this.logger.warn(
+            { userId: user.id, attempt },
+            "verification code hash collision, retrying",
+          )
           continue
         }
         throw err

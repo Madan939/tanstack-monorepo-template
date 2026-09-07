@@ -1,7 +1,6 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto"
 import { Injectable } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import type { User } from "@prisma/client"
 import { AppConfigService } from "../../config/app-config.service"
 
 export interface AccessTokenPayload {

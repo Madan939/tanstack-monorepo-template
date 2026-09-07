@@ -1,5 +1,5 @@
-import { CONFIG } from "#/config"
 import { useQuery } from "@workspace/query"
+import { CONFIG } from "#/config"
 import { authApiService } from "../../services"
 import type { MeQuery } from "../../types"
 

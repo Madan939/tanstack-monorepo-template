@@ -1,7 +1,7 @@
-import { CONFIG } from "#/config"
-import { useMutation } from "@workspace/query"
 import { useNavigate } from "@tanstack/react-router"
+import { useMutation } from "@workspace/query"
 import { toast } from "@workspace/ui"
+import { CONFIG } from "#/config"
 import { authApiService } from "../../services"
 import type { LogoutAllMutation, LogoutMutation } from "../../types"
 

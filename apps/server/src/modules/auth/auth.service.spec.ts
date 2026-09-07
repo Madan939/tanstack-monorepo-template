@@ -112,7 +112,8 @@ describe("AuthService", () => {
       token: { findUnique: jest.fn(), create: jest.fn(), deleteMany: jest.fn(), update: jest.fn() },
       session: { updateMany: jest.fn().mockResolvedValue({ count: 0 }) },
       $transaction: jest.fn(async (ops: unknown) => {
-        if (typeof ops === "function") return (ops as (tx: typeof prisma) => Promise<unknown>)(prisma as never)
+        if (typeof ops === "function")
+          return (ops as (tx: typeof prisma) => Promise<unknown>)(prisma as never)
         if (Array.isArray(ops)) return Promise.all(ops as Promise<unknown>[])
         return ops
       }),

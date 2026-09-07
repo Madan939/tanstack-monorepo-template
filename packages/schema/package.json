@@ -33,7 +33,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "biome check ./src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

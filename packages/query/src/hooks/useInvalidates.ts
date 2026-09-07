@@ -1,22 +1,21 @@
-import { type QueryKey, useQueryClient } from '@tanstack/react-query';
+import { type QueryKey, useQueryClient } from "@tanstack/react-query"
 
 export const useInvalidates = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const invalidate = (key: QueryKey) =>
-    queryClient.invalidateQueries({ queryKey: key });
+  const invalidate = (key: QueryKey) => queryClient.invalidateQueries({ queryKey: key })
 
   const invalidateMany = (keys: QueryKey[]) =>
     Promise.all(
       keys.map((key) =>
         queryClient.invalidateQueries({
           queryKey: key,
-          type: 'all',
+          type: "all",
           exact: false,
-          refetchType: 'all',
+          refetchType: "all",
         }),
       ),
-    );
+    )
 
-  return { invalidate, invalidateMany };
-};
+  return { invalidate, invalidateMany }
+}

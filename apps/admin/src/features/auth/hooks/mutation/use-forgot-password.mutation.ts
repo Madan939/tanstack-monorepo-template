@@ -11,8 +11,13 @@ export function useForgotPasswordMutation() {
   >(
     (variables) => authApiService.forgotPassword(variables),
     {
-      onSuccess: (data) => {
-        toast.success(data?.data?.message ?? "Reset link sent", { duration: 5000 })
+      onSuccess: (response) => {
+        toast.success(response.data.message)
+      },
+      onError: (error: ForgotPasswordMutation.ErrorResponse) => {
+        const rawMessage = error.response?.data?.message
+        const message = Array.isArray(rawMessage) ? rawMessage.join(", ") : (rawMessage ?? error.response?.data?.error ?? error.message)
+        toast.error(message ?? "Failed to send reset link")
       },
     },
   )

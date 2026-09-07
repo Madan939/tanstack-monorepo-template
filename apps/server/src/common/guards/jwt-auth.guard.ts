@@ -46,8 +46,7 @@ export class JwtAuthGuard {
     const cookieName =
       this.appConfig.config.cookies.accessTokenName ?? ADMIN_ACCESS_TOKEN_COOKIE_FALLBACK
     // Prefer cookie (httpOnly server-side auth) then header for API clients
-    const token =
-      request.cookies?.[cookieName] ?? extractBearerToken(request.headers.authorization)
+    const token = request.cookies?.[cookieName] ?? extractBearerToken(request.headers.authorization)
     if (!token) throw new UnauthorizedException("Authentication required")
 
     let payload: AuthenticatedUser & { iat?: number; exp?: number }

@@ -66,7 +66,7 @@ export const ICON_NAMES = [
   "upload",
   "user",
   "video",
-  "youtube"
+  "youtube",
 ] as const
 
 export type IconNameChatboq = (typeof ICON_NAMES)[number]
