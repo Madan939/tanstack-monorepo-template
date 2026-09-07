@@ -83,6 +83,51 @@
     },
     {
       "includes": [
+        "packages/ui/src/components/design/sidebar.tsx",
+        "packages/ui/src/components/design/chart.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noDocumentCookie": "off",
+            "noArrayIndexKey": "off"
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/ui/src/components/design/breadcrumb.tsx",
+        "packages/ui/src/components/design/button-group.tsx",
+        "packages/ui/src/components/design/button.tsx",
+        "packages/ui/src/components/design/input-otp.tsx",
+        "packages/ui/src/components/design/item.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "useFocusableInteractive": "off",
+            "useAriaPropsForRole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ui/src/components/design/slider.tsx"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
         "**/routeTree.gen.ts",
         "apps/admin/src/routeTree.gen.ts",
         "apps/web/src/routeTree.gen.ts",

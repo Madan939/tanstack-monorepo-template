@@ -44,6 +44,12 @@ export interface AppConfig {
     emailVerificationTtlMinutes: number
     passwordResetTtlMinutes: number
   }
+
+  turnstile?: {
+    enabled: boolean
+    secretKey: string
+    siteKey: string
+  }
 }
 
 export const CONFIG = Symbol("APP_CONFIG")
@@ -96,5 +102,13 @@ export function configFactory(cs: ConfigService): AppConfig {
       emailVerificationTtlMinutes: cs.getOrThrow<number>("EMAIL_VERIFICATION_TTL_MINUTES"),
       passwordResetTtlMinutes: cs.getOrThrow<number>("PASSWORD_RESET_TTL_MINUTES"),
     },
+
+    turnstile: cs.getOrThrow<boolean>("TURNSTILE_ENABLED")
+      ? {
+          enabled: cs.getOrThrow<boolean>("TURNSTILE_ENABLED"),
+          secretKey: cs.get<string>("TURNSTILE_SECRET_KEY", "") ?? "",
+          siteKey: cs.get<string>("TURNSTILE_SITE_KEY", "") ?? "",
+        }
+      : undefined,
   }
 }

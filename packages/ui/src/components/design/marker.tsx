@@ -62,4 +62,4 @@ function MarkerContent({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
-export { Marker, MarkerIcon, MarkerContent, markerVariants }
+export { Marker, MarkerContent, MarkerIcon, markerVariants }

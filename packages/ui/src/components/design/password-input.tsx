@@ -1,11 +1,10 @@
-import * as React from "react"
-
 import { Icon } from "@workspace/ui/components/shared/icon"
 import { cn } from "@workspace/ui/lib/utils"
+import * as React from "react"
 
 import { Input, type InputProps } from "./input"
 
-export interface PasswordInputProps extends Omit<InputProps, "type" | "rightIcon"> {}
+export interface PasswordInputProps extends Omit<InputProps, "type" | "endIcon"> {}
 
 function PasswordInput({ disabled, size, ...props }: PasswordInputProps) {
   const [showPassword, setShowPassword] = React.useState(false)
@@ -23,7 +22,7 @@ function PasswordInput({ disabled, size, ...props }: PasswordInputProps) {
       size={size}
       disabled={disabled}
       type={showPassword ? "text" : "password"}
-      rightIcon={
+      endIcon={
         <button
           type="button"
           tabIndex={-1}

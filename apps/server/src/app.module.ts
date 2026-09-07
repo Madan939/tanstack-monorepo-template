@@ -8,10 +8,11 @@ import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard"
 import { AppConfigModule } from "./config/app-config.module"
 import { envValidationSchema } from "./config/env.validation"
-import { pinoLoggerOptionsFactory } from "./core/logger/logger.options"
 import { CleanupModule } from "./core/cleanup/cleanup.module"
+import { pinoLoggerOptionsFactory } from "./core/logger/logger.options"
 import { PrismaModule } from "./core/prisma/prisma.module"
 import { AuthModule } from "./modules/auth/auth.module"
+import { CaptchaModule } from "./modules/captcha/captcha.module"
 import { HealthModule } from "./modules/health/health.module"
 import { UsersModule } from "./modules/users/users.module"
 
@@ -41,6 +42,7 @@ import { UsersModule } from "./modules/users/users.module"
     // Registered at the root so globally-provided JwtAuthGuard can inject it.
     JwtModule.register({}),
     AuthModule,
+    CaptchaModule,
     UsersModule,
     HealthModule,
     CleanupModule,

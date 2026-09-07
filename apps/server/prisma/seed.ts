@@ -1,4 +1,4 @@
-import "./src/load-env"
+import "../src/load-env"
 
 import { randomUUID } from "node:crypto"
 import { PrismaClient } from "@prisma/client"

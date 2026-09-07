@@ -16,7 +16,7 @@ export function ResetPasswordForm({ isPending, error }: ResetPasswordFormProps) 
         required
         placeholder="Enter new password"
         autoComplete="new-password"
-        hint="12+ chars, upper/lower, number & symbol"
+        description="12+ chars, upper/lower, number & symbol"
       />
       {error ? (
         <p role="alert" className="text-destructive text-sm">

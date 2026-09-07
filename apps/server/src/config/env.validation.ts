@@ -25,7 +25,9 @@ export const envValidationSchema = Joi.object({
     is: "production",
     // biome-ignore lint/suspicious/noThenProperty: Joi conditional schema keyword.
     then: Joi.string().min(1).required(),
-    otherwise: Joi.string().default("http://localhost:3000,http://localhost:5173"),
+    otherwise: Joi.string().default(
+      "http://localhost:3000,http://localhost:3001,http://localhost:5173",
+    ),
   }),
   // Enable when behind a reverse proxy / load balancer so client IPs
   // (rate limiting keys, audit logs) resolve correctly.
@@ -70,4 +72,10 @@ export const envValidationSchema = Joi.object({
   EMAIL_VERIFICATION_TTL_HOURS: Joi.number().integer().min(1).default(24),
   EMAIL_VERIFICATION_TTL_MINUTES: Joi.number().integer().min(1).max(60).default(10),
   PASSWORD_RESET_TTL_MINUTES: Joi.number().integer().min(5).default(15),
+
+  // Cloudflare Turnstile — https://developers.cloudflare.com/turnstile/
+  // When disabled (default in dev/test), /auth/captcha/verify bypasses remote check.
+  TURNSTILE_ENABLED: Joi.boolean().default(false),
+  TURNSTILE_SECRET_KEY: Joi.string().allow("").default(""),
+  TURNSTILE_SITE_KEY: Joi.string().allow("").default(""),
 })

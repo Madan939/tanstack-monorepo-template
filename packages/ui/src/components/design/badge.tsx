@@ -10,11 +10,17 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
+        // Base / shadcn
         default: "border-transparent bg-primary text-primary-foreground",
         secondary: "border-transparent bg-secondary text-secondary-foreground",
         destructive: "border-transparent bg-destructive text-destructive-foreground",
         outline: "border-border bg-background text-foreground",
         ghost: "border-transparent bg-muted text-muted-foreground",
+        // International Standard — Semantic
+        info: "border-transparent bg-info text-info-foreground", // blue — informational, neutral context help
+        success: "border-transparent bg-success text-success-foreground", // green — success, completion, verified
+        warning: "border-transparent bg-warning text-warning-foreground", // amber — warning, caution, pending
+        neutral: "border-transparent bg-neutral text-neutral-foreground", // gray — neutral, inactive, count
       },
       size: {
         default: "px-2 py-0.5 text-xs",
@@ -23,7 +29,7 @@ const badgeVariants = cva(
       },
       radius: {
         default: "rounded-md",
-        rounded: "rounded-full",
+        full: "rounded-full",
       },
     },
     defaultVariants: { variant: "default", size: "default", radius: "default" },
@@ -38,6 +44,10 @@ const badgeDotVariants = cva("shrink-0 rounded-full bg-current", {
       destructive: "text-destructive",
       outline: "text-foreground",
       ghost: "text-muted-foreground",
+      info: "text-info",
+      success: "text-success",
+      warning: "text-warning",
+      neutral: "text-neutral-foreground",
     },
     size: {
       default: "size-1.5",
@@ -55,15 +65,19 @@ function isIconName(value: unknown): value is IconName {
 type BadgeProps = React.ComponentProps<"span"> &
   VariantProps<typeof badgeVariants> & {
     asChild?: boolean
-    leftIcon?: IconName | React.ReactNode
-    rightIcon?: IconName | React.ReactNode
+    /** Icon displayed at the start (leading, RTL-aware) */
+    startIcon?: IconName | React.ReactNode
+    /** Icon displayed at the end (trailing, RTL-aware) */
+    endIcon?: IconName | React.ReactNode
     iconSize?: number
-    dot?: boolean
+    /** Show leading dot indicator */
+    showDot?: boolean
     dotVariant?: VariantProps<typeof badgeDotVariants>["variant"]
     dotClassName?: string
-    removable?: boolean
-    onRemove?: () => void
-    outline?: boolean
+    /** Show close/dismiss button */
+    withCloseButton?: boolean
+    /** Called when close button is pressed */
+    onClose?: () => void
   }
 
 function Badge({
@@ -72,20 +86,19 @@ function Badge({
   size,
   radius,
   asChild = false,
-  leftIcon,
-  rightIcon,
+  startIcon,
+  endIcon,
   iconSize = 12,
-  dot = false,
+  showDot = false,
   dotVariant,
-  removable = false,
-  onRemove,
-  outline = false,
+  withCloseButton = false,
+  onClose,
   children,
   dotClassName,
   ...props
 }: BadgeProps) {
   const Comp = asChild ? Slot.Root : "span"
-  const outlineClasses = outline ? "bg-transparent border-border" : ""
+
   const finalDotVariant = dotVariant ?? variant
 
   const renderIcon = (
@@ -93,9 +106,18 @@ function Badge({
     position: "inline-start" | "inline-end",
   ) => {
     if (!icon) return null
-    const node = isIconName(icon) ? <Icon name={icon} size={iconSize} aria-hidden decorative /> : icon
+    const node = isIconName(icon) ? (
+      <Icon name={icon} size={iconSize} aria-hidden decorative />
+    ) : (
+      icon
+    )
     return (
-      <span data-icon={position} data-slot="badge-icon" aria-hidden="true" className="inline-flex shrink-0 items-center">
+      <span
+        data-icon={position}
+        data-slot="badge-icon"
+        aria-hidden="true"
+        className="inline-flex shrink-0 items-center"
+      >
         {node}
       </span>
     )
@@ -107,22 +129,29 @@ function Badge({
       data-variant={variant}
       data-size={size}
       data-radius={radius}
-      className={cn(badgeVariants({ variant, size, radius }), variant && outline && outlineClasses, className)}
+      className={cn(badgeVariants({ variant, size, radius }), className)}
       {...props}
     >
-      {dot && <span data-icon="inline-start" className={cn(badgeDotVariants({ variant: finalDotVariant, size }), dotClassName)} aria-hidden="true" />}
-      {renderIcon(leftIcon, "inline-start")}
+      {showDot && (
+        <span
+          data-icon="inline-start"
+          className={cn(badgeDotVariants({ variant: finalDotVariant, size }), dotClassName)}
+          aria-hidden="true"
+        />
+      )}
+      {renderIcon(startIcon, "inline-start")}
       {children}
-      {renderIcon(rightIcon, "inline-end")}
-      {removable && (
+      {renderIcon(endIcon, "inline-end")}
+      {withCloseButton && (
         <button
           type="button"
           data-icon="inline-end"
+          aria-label="Remove badge"
           onClick={(e) => {
             e.stopPropagation()
-            onRemove?.()
+            onClose?.()
           }}
-          className="ml-1 inline-flex shrink-0 items-center rounded-sm hover:bg-black/10"
+          className="ml-1 inline-flex shrink-0 items-center rounded-sm hover:bg-black/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <Icon name="close" size={12} aria-hidden decorative />
         </button>

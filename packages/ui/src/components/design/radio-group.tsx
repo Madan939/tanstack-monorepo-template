@@ -2,11 +2,23 @@ import { cn } from "@workspace/ui/lib/utils"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
 import * as React from "react"
 
-function RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
-  return <RadioGroupPrimitive.Root data-slot="radio-group" className={cn("grid w-full gap-3", className)} {...props} />
+function RadioGroup({
+  className,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
+  return (
+    <RadioGroupPrimitive.Root
+      data-slot="radio-group"
+      className={cn("grid w-full gap-3", className)}
+      {...props}
+    />
+  )
 }
 
-function RadioGroupItem({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+function RadioGroupItem({
+  className,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
   return (
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"
@@ -26,9 +38,17 @@ function RadioGroupItem({ className, ...props }: React.ComponentProps<typeof Rad
   )
 }
 
-function RadioGroupItemNative({ children, className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+function RadioGroupItemNative({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
   return (
-    <RadioGroupPrimitive.Item data-slot="radio-group-item-native" className={cn("peer", className)} {...props}>
+    <RadioGroupPrimitive.Item
+      data-slot="radio-group-item-native"
+      className={cn("peer", className)}
+      {...props}
+    >
       {children}
     </RadioGroupPrimitive.Item>
   )

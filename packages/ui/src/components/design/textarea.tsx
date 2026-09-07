@@ -1,9 +1,8 @@
+import { type IconName, icons } from "@workspace/ui/components/icons/registry"
+import { Icon } from "@workspace/ui/components/shared/icon"
 import { cn } from "@workspace/ui/lib/utils"
 import { cva, type VariantProps } from "class-variance-authority"
 import * as React from "react"
-
-import { type IconName, icons } from "@workspace/ui/components/icons/registry"
-import { Icon } from "@workspace/ui/components/shared/icon"
 
 const textareaVariants = cva(
   [
@@ -53,15 +52,16 @@ function isIconName(value: unknown): value is IconName {
 export interface TextareaProps
   extends Omit<React.ComponentProps<"textarea">, "size">,
     VariantProps<typeof textareaVariants> {
-  leftIcon?: React.ReactNode | IconName
+  /** Icon at start (RTL-aware) */
+  startIcon?: React.ReactNode | IconName
 }
 
-function Textarea({ className, size, leftIcon, ...props }: TextareaProps) {
+function Textarea({ className, size, startIcon, ...props }: TextareaProps) {
   const iconSize = getIconSize(size)
   const isDisabled = props.disabled
   const isInvalid = props["aria-invalid"] === true || props["aria-invalid"] === "true"
 
-  if (!leftIcon) {
+  if (!startIcon) {
     return (
       <textarea
         data-slot="textarea"
@@ -85,10 +85,16 @@ function Textarea({ className, size, leftIcon, ...props }: TextareaProps) {
       className={cn(textareaVariants({ size }), className)}
     >
       <div className="mt-0.5 shrink-0">
-        {isIconName(leftIcon) ? (
-          <Icon name={leftIcon} size={iconSize} aria-hidden decorative className="text-muted-foreground" />
+        {isIconName(startIcon) ? (
+          <Icon
+            name={startIcon}
+            size={iconSize}
+            aria-hidden
+            decorative
+            className="text-muted-foreground"
+          />
         ) : (
-          leftIcon
+          startIcon
         )}
       </div>
       <textarea data-slot="textarea" className={cn(textareaElementVariants({ size }))} {...props} />

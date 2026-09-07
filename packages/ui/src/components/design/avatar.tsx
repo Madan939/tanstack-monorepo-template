@@ -1,17 +1,21 @@
+import { type IconName } from "@workspace/ui/components/icons/registry"
+import { Icon } from "@workspace/ui/components/shared/icon"
 import { cn } from "@workspace/ui/lib/utils"
 import { Avatar as AvatarPrimitive } from "radix-ui"
 import * as React from "react"
 
-import { type IconName } from "@workspace/ui/components/icons/registry"
-import { Icon } from "@workspace/ui/components/shared/icon"
-
 export type AvatarSize = "xs" | "sm" | "md" | "default" | "lg" | "xl" | "2xl"
 type AvatarFallbackType = "text" | "icon"
 
-interface AvatarGroupContextValue { size: AvatarSize }
+interface AvatarGroupContextValue {
+  size: AvatarSize
+}
 const AvatarGroupContext = React.createContext<AvatarGroupContextValue>({ size: "default" })
 
-const avatarConfig: Record<AvatarSize, { size: string; text: string; icon: number; badge: string }> = {
+const avatarConfig: Record<
+  AvatarSize,
+  { size: string; text: string; icon: number; badge: string }
+> = {
   xs: { size: "size-6", text: "text-[10px] leading-none", icon: 12, badge: "size-2" },
   sm: { size: "size-8", text: "text-xs leading-none", icon: 14, badge: "size-2.5" },
   default: { size: "size-9", text: "text-sm leading-none", icon: 16, badge: "size-2.5" },
@@ -127,12 +131,23 @@ function Avatar({
       ) : (
         <AvatarPrimitive.Fallback
           data-slot="avatar-fallback"
-          className={cn("flex size-full items-center justify-center bg-muted text-foreground", config.text)}
+          className={cn(
+            "flex size-full items-center justify-center bg-muted text-foreground",
+            config.text,
+          )}
         >
           {fallbackType === "icon" ? (
-            <Icon name={iconName} size={config.icon} className="text-muted-foreground" aria-hidden decorative />
+            <Icon
+              name={iconName}
+              size={config.icon}
+              className="text-muted-foreground"
+              aria-hidden
+              decorative
+            />
           ) : (
-            <span className={cn("font-medium", config.text)}>{getInitials(fallbackText ?? "User")}</span>
+            <span className={cn("font-medium", config.text)}>
+              {getInitials(fallbackText ?? "User")}
+            </span>
           )}
         </AvatarPrimitive.Fallback>
       )}
@@ -151,14 +166,26 @@ function Avatar({
 
 // Legacy simple API for compatibility
 function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return <AvatarPrimitive.Image data-slot="avatar-image" className={cn("aspect-square size-full object-cover", className)} {...props} />
+  return (
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn("aspect-square size-full object-cover", className)}
+      {...props}
+    />
+  )
 }
 
-function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+function AvatarFallback({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
-      className={cn("flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground", className)}
+      className={cn(
+        "flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground",
+        className,
+      )}
       {...props}
     />
   )
@@ -168,10 +195,21 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="avatar-badge"
-      className={cn("absolute -right-1 -bottom-1 z-10 inline-flex rounded-full bg-primary ring-2 ring-background", className)}
+      className={cn(
+        "absolute -right-1 -bottom-1 z-10 inline-flex rounded-full bg-primary ring-2 ring-background",
+        className,
+      )}
       {...props}
     />
   )
 }
 
-export { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage, AvatarBadge, avatarConfig }
+export {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarImage,
+  avatarConfig,
+}

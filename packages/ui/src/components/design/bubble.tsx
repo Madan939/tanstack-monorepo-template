@@ -32,6 +32,14 @@ const bubbleVariants = cva(
           "border-none *:data-[slot=bubble-content]:rounded-none *:data-[slot=bubble-content]:bg-transparent *:data-[slot=bubble-content]:p-0 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-muted [&>[data-slot=bubble-content]:is(button,a):hover]:text-foreground dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-muted/50",
         destructive:
           "*:data-[slot=bubble-content]:bg-destructive/10 *:data-[slot=bubble-content]:text-destructive dark:*:data-[slot=bubble-content]:bg-destructive/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-destructive/20 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-destructive/30",
+        // International Standard — Semantic
+        info: "*:data-[slot=bubble-content]:bg-info/10 *:data-[slot=bubble-content]:text-info dark:*:data-[slot=bubble-content]:bg-info/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-info/20 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-info/30", // blue — informational response
+        success:
+          "*:data-[slot=bubble-content]:bg-success/10 *:data-[slot=bubble-content]:text-success dark:*:data-[slot=bubble-content]:bg-success/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-success/20 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-success/30", // green — success, completion
+        warning:
+          "*:data-[slot=bubble-content]:bg-warning/15 *:data-[slot=bubble-content]:text-warning-foreground dark:*:data-[slot=bubble-content]:bg-warning/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-warning/25 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-warning/30", // amber — caution, pending
+        neutral:
+          "*:data-[slot=bubble-content]:bg-neutral/30 *:data-[slot=bubble-content]:text-neutral-foreground dark:*:data-[slot=bubble-content]:bg-neutral/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-neutral/40 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-neutral/30", // gray — neutral, system message
       },
     },
     defaultVariants: {
@@ -121,4 +129,4 @@ function BubbleReactions({
   )
 }
 
-export { BubbleGroup, Bubble, BubbleContent, BubbleReactions }
+export { Bubble, BubbleContent, BubbleGroup, BubbleReactions }

@@ -117,159 +117,34 @@ export { useRHFForm as useFormClassic }
  * - `noValidate` by default (prevents native browser validation, uses Zod)
  */
 export type FormWrapperProps<TFieldValues extends FieldValues = FieldValues> = {
-  /** Existing form instance — aliases: `form` / `useFormMethods` / `methods` */
-  form?: UseFormReturn<TFieldValues, unknown, unknown>
-  useFormMethods?: UseFormReturn<TFieldValues, unknown, unknown>
-  methods?: UseFormReturn<TFieldValues, unknown, unknown>
-  /** Create form internally — pass `schema` + `defaultValues`/`values` etc. */
-  schema?: ZodType<TFieldValues>
-  resolver?: RHFUseFormProps<TFieldValues, unknown, unknown>["resolver"]
-  defaultValues?: RHFUseFormProps<TFieldValues, unknown, unknown>["defaultValues"]
-  values?: RHFUseFormProps<TFieldValues, unknown, unknown>["values"]
-  mode?: RHFUseFormProps<TFieldValues, unknown, unknown>["mode"]
-  /** Direct submit handler — auto-wrapped with `form.handleSubmit` */
-  onSubmit?: (
-    data: TFieldValues,
-    form: UseFormReturn<TFieldValues, unknown, unknown>,
-  ) => void | Promise<void>
-  onError?: (
-    errors: import("react-hook-form").FieldErrors<TFieldValues>,
-    form: UseFormReturn<TFieldValues, unknown, unknown>,
-  ) => void
+  form: UseFormReturn<TFieldValues>
   formProps?: React.FormHTMLAttributes<HTMLFormElement>
   className?: string
-  children:
-    | React.ReactNode
-    | ((form: UseFormReturn<TFieldValues, unknown, unknown>) => React.ReactNode)
+  children: React.ReactNode | ((form: UseFormReturn<TFieldValues>) => React.ReactNode)
   /** Disable native validation — defaults to true for Zod control */
   noValidate?: boolean
   id?: string
 }
 
-function FormWrapperInternal<TFieldValues extends FieldValues>({
-  schema,
-  resolver,
-  defaultValues,
-  values,
-  mode,
-  onSubmit,
-  onError,
-  formProps,
-  className,
-  children,
-  noValidate = true,
-  id,
-}: Omit<FormWrapperProps<TFieldValues>, "form" | "useFormMethods" | "methods">) {
-  const form = useForm<TFieldValues>({
-    ...(schema ? { schema: schema as ZodType<TFieldValues> } : {}),
-    ...(resolver ? { resolver } : {}),
-    ...(defaultValues !== undefined ? { defaultValues } : {}),
-    ...(values !== undefined ? { values } : {}),
-    ...(mode ? { mode } : {}),
-  } as unknown as Parameters<typeof useForm<TFieldValues>>[0])
-
-  return (
-    <FormWrapperExternal
-      form={form}
-      onSubmit={onSubmit}
-      onError={onError}
-      formProps={formProps}
-      className={className}
-      noValidate={noValidate}
-      id={id}
-    >
-      {children}
-    </FormWrapperExternal>
-  )
-}
-
-function FormWrapperExternal<TFieldValues extends FieldValues>({
+function FormWrapperInner<TFieldValues extends FieldValues>({
   form,
-  useFormMethods,
-  methods,
-  onSubmit,
-  onError,
   formProps,
   className,
   children,
   noValidate = true,
   id,
-}: Pick<
-  FormWrapperProps<TFieldValues>,
-  | "form"
-  | "useFormMethods"
-  | "methods"
-  | "onSubmit"
-  | "onError"
-  | "formProps"
-  | "className"
-  | "children"
-  | "noValidate"
-  | "id"
->) {
-  const activeForm = (form ?? useFormMethods ?? methods) as UseFormReturn<
-    TFieldValues,
-    unknown,
-    TFieldValues
-  >
-  if (!activeForm) throw new Error("FormWrapper requires `form` or `schema`")
-
-  const handleSubmit = React.useMemo(() => {
-    if (!onSubmit) return formProps?.onSubmit
-    return activeForm.handleSubmit(
-      (data) => onSubmit(data, activeForm),
-      (errors) =>
-        onError?.(errors as import("react-hook-form").FieldErrors<TFieldValues>, activeForm),
-    )
-  }, [onSubmit, onError, activeForm, formProps?.onSubmit])
-
+}: FormWrapperProps<TFieldValues>) {
   const content =
     typeof children === "function"
-      ? (children as (form: UseFormReturn<TFieldValues, unknown, TFieldValues>) => React.ReactNode)(
-          activeForm,
-        )
+      ? (children as (form: UseFormReturn<TFieldValues>) => React.ReactNode)(form)
       : children
 
   return (
-    <FormProvider {...activeForm}>
-      <form
-        id={id}
-        className={className}
-        noValidate={noValidate}
-        {...formProps}
-        onSubmit={(handleSubmit as unknown as React.FormEventHandler) ?? formProps?.onSubmit}
-      >
+    <FormProvider {...form}>
+      <form id={id} className={className} noValidate={noValidate} {...formProps}>
         {content}
       </form>
     </FormProvider>
-  )
-}
-
-function FormWrapperInner<TFieldValues extends FieldValues>(props: FormWrapperProps<TFieldValues>) {
-  const externalForm = props.form ?? props.useFormMethods ?? props.methods
-  if (externalForm) {
-    return (
-      <FormWrapperExternal
-        {...(props as Pick<
-          FormWrapperProps<TFieldValues>,
-          | "form"
-          | "useFormMethods"
-          | "methods"
-          | "onSubmit"
-          | "onError"
-          | "formProps"
-          | "className"
-          | "children"
-          | "noValidate"
-          | "id"
-        >)}
-      />
-    )
-  }
-  return (
-    <FormWrapperInternal
-      {...(props as Omit<FormWrapperProps<TFieldValues>, "form" | "useFormMethods" | "methods">)}
-    />
   )
 }
 

@@ -13,6 +13,7 @@ import { ApiErrors } from "../../common/decorators/api-errors.decorator"
 import { AuthenticatedUser, CurrentUser } from "../../common/decorators/current-user.decorator"
 import { Public } from "../../common/decorators/public.decorator"
 import { MessageResponseDto } from "../../common/dto/message-response.dto"
+import { CaptchaGuard } from "../../common/guards/captcha.guard"
 import { CsrfGuard } from "../../common/guards/csrf.guard"
 import { AppConfigService } from "../../config/app-config.service"
 import { AuthService } from "./auth.service"
@@ -61,6 +62,7 @@ export class AuthController {
   @Public()
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(CaptchaGuard)
   @authThrottle()
   @ApiOperation({
     summary: "Create a new account",
@@ -83,6 +85,7 @@ export class AuthController {
   @Public()
   @Post("login")
   @HttpCode(HttpStatus.OK)
+  @UseGuards(CaptchaGuard)
   @authThrottle()
   @ApiOperation({
     summary: "Sign in with email and password",
@@ -111,7 +114,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthSessionResponseDto> {
     const result = await this.authService.login(dto, this.metaFrom(req))
-    this.setAuthCookies(res, result.refreshToken, result.csrfToken, result.accessToken, result.expiresIn)
+    this.setAuthCookies(
+      res,
+      result.refreshToken,
+      result.csrfToken,
+      result.accessToken,
+      result.expiresIn,
+    )
     // Refresh token lives only in the httpOnly cookie - never in the body.
     return this.authResponseBody(result)
   }
@@ -150,7 +159,13 @@ export class AuthController {
   ): Promise<AuthSessionResponseDto> {
     const refreshToken = req.cookies?.[this.appConfig.config.cookies.refreshTokenName]
     const result = await this.authService.refresh(refreshToken, this.metaFrom(req))
-    this.setAuthCookies(res, result.refreshToken, result.csrfToken, result.accessToken, result.expiresIn)
+    this.setAuthCookies(
+      res,
+      result.refreshToken,
+      result.csrfToken,
+      result.accessToken,
+      result.expiresIn,
+    )
     return this.authResponseBody(result)
   }
 
@@ -235,7 +250,8 @@ export class AuthController {
   @authThrottle()
   @ApiOperation({
     summary: "Verify an email address with 6-digit code",
-    description: "Consumes a single-use 6-digit code delivered by email. Code expires in 10 minutes.",
+    description:
+      "Consumes a single-use 6-digit code delivered by email. Code expires in 10 minutes.",
   })
   @ApiResponse({ status: HttpStatus.OK, description: "Email verified.", type: MessageResponseDto })
   @ApiErrors(

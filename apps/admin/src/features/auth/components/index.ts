@@ -1,3 +1,4 @@
+export { CaptchaField } from "./captcha-field"
 export { ForgotPasswordForm } from "./forgot-password"
 export { FormHeader } from "./form-header"
 export { LoginForm } from "./login"
