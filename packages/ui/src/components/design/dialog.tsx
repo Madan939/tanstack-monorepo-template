@@ -55,7 +55,8 @@ function DialogContent({
         className={cn(
           "fixed z-50 flex flex-col max-w-[95vw] rounded-xl bg-popover text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 top-1/2 -translate-y-1/2",
           position === "center" && "left-1/2 -translate-x-1/2",
-          position === "right" && "right-6 data-open:slide-in-from-right data-closed:slide-out-to-right",
+          position === "right" &&
+            "right-6 data-open:slide-in-from-right data-closed:slide-out-to-right",
           "gap-6 p-6",
           className,
         )}
@@ -64,7 +65,12 @@ function DialogContent({
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button variant="ghost" className="absolute top-4 right-4" size="icon" aria-label="Close">
+            <Button
+              variant="ghost"
+              className="absolute top-4 right-4"
+              size="icon"
+              aria-label="Close"
+            >
               <XIcon className="size-4" />
             </Button>
           </DialogPrimitive.Close>
@@ -75,7 +81,9 @@ function DialogContent({
 }
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="dialog-header" className={cn("flex flex-col gap-1.5", className)} {...props} />
+  return (
+    <div data-slot="dialog-header" className={cn("flex flex-col gap-1.5", className)} {...props} />
+  )
 }
 
 function DialogFooter({

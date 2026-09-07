@@ -41,9 +41,11 @@ export const Route = createFileRoute("/auth")({
 
 function AuthLayout() {
   return (
-    <section className="grid grid-cols-2 gap-10">
-      <div></div>
-      <Outlet />
+    <section className="h-screen grid grid-cols-2">
+      <div className="border-r"></div>
+      <div className="px-6 flex flex-col justify-center max-w-md mx-auto w-full">
+        <Outlet />
+      </div>
     </section>
   )
 }

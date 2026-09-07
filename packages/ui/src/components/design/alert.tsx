@@ -10,7 +10,16 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: "bg-card text-card-foreground border-border",
-        destructive: "bg-card text-destructive border-destructive/20 *:data-[slot=alert-description]:text-destructive/80",
+        destructive:
+          "bg-card text-destructive border-destructive/20 *:data-[slot=alert-description]:text-destructive/80",
+        // International Standard — Semantic
+        info: "bg-info/10 text-info border-info/20 *:data-[slot=alert-description]:text-info/80 [&_svg]:text-info", // blue — informational, help, tips
+        success:
+          "bg-success/10 text-success border-success/20 *:data-[slot=alert-description]:text-success/80 [&_svg]:text-success", // green — success, completed, verified
+        warning:
+          "bg-warning/15 text-warning-foreground border-warning/30 *:data-[slot=alert-description]:text-warning-foreground/80 [&_svg]:text-warning", // amber — warning, caution, pending review
+        neutral:
+          "bg-neutral/30 text-neutral-foreground border-neutral/40 *:data-[slot=alert-description]:text-neutral-foreground/80 [&_svg]:text-neutral-foreground", // gray — neutral, inactive, secondary info
       },
     },
     defaultVariants: { variant: "default" },
@@ -23,29 +32,56 @@ function isIconName(value: unknown): value is IconName {
 
 type AlertProps = React.ComponentProps<"div"> &
   VariantProps<typeof alertVariants> & {
-    leftIcon?: IconName | React.ReactNode
-    rightIcon?: IconName | React.ReactNode
+    /** Icon at start (RTL-aware) */
+    startIcon?: IconName | React.ReactNode
+    /** Icon at end (RTL-aware) */
+    endIcon?: IconName | React.ReactNode
     iconSize?: number
   }
 
-function Alert({ className, variant, leftIcon, rightIcon, iconSize = 16, children, ...props }: AlertProps) {
-  const renderIcon = (icon: IconName | React.ReactNode | undefined, position: "inline-start" | "inline-end") => {
+function Alert({
+  className,
+  variant,
+  startIcon,
+  endIcon,
+  iconSize = 16,
+  children,
+  ...props
+}: AlertProps) {
+  const renderIcon = (
+    icon: IconName | React.ReactNode | undefined,
+    position: "inline-start" | "inline-end",
+  ) => {
     if (!icon) return null
-    const node = isIconName(icon) ? <Icon name={icon} size={iconSize} aria-hidden decorative /> : icon
+    const node = isIconName(icon) ? (
+      <Icon name={icon} size={iconSize} aria-hidden decorative />
+    ) : (
+      icon
+    )
     return (
-      <span data-icon={position} data-slot="alert-icon" aria-hidden="true" className="inline-flex shrink-0">
+      <span
+        data-icon={position}
+        data-slot="alert-icon"
+        aria-hidden="true"
+        className="inline-flex shrink-0"
+      >
         {node}
       </span>
     )
   }
 
   return (
-    <div data-slot="alert" role="alert" className={cn(alertVariants({ variant }), className)} {...props}>
-      {renderIcon(leftIcon, "inline-start")}
+    <div
+      data-slot="alert"
+      role="alert"
+      className={cn(alertVariants({ variant }), className)}
+      {...props}
+    >
+      {renderIcon(startIcon, "inline-start")}
       <div data-slot="alert-content" className="grid gap-1">
         {children}
       </div>
-      {renderIcon(rightIcon, "inline-end")}
+      {renderIcon(endIcon, "inline-end")}
     </div>
   )
 }
@@ -54,7 +90,10 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-title"
-      className={cn("text-sm font-semibold [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground", className)}
+      className={cn(
+        "text-sm font-semibold [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
+        className,
+      )}
       {...props}
     />
   )
@@ -64,14 +103,23 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
   return (
     <div
       data-slot="alert-description"
-      className={cn("text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4", className)}
+      className={cn(
+        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        className,
+      )}
       {...props}
     />
   )
 }
 
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="alert-action" className={cn("absolute top-2.5 right-3", className)} {...props} />
+  return (
+    <div
+      data-slot="alert-action"
+      className={cn("absolute top-2.5 right-3", className)}
+      {...props}
+    />
+  )
 }
 
 export { Alert, AlertAction, AlertDescription, AlertTitle }

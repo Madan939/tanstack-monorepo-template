@@ -8,7 +8,6 @@ type FormSelectProps<T extends FieldValues> = {
   control?: Control<T>
   label?: string
   description?: string
-  hint?: string
   required?: boolean
   placeholder?: string
   searchPlaceholder?: string
@@ -32,7 +31,6 @@ function FormSelect<T extends FieldValues>({
   control,
   label,
   description,
-  hint,
   required,
   placeholder,
   searchPlaceholder,
@@ -48,7 +46,6 @@ function FormSelect<T extends FieldValues>({
   cacheOptions,
   defaultOptions,
 }: FormSelectProps<T>) {
-  const hintText = hint ?? description
   return (
     <FormField
       control={control}
@@ -74,7 +71,7 @@ function FormSelect<T extends FieldValues>({
               defaultOptions={defaultOptions}
             />
           </FormControl>
-          {hintText ? <FormDescription>{hintText}</FormDescription> : null}
+          {description ? <FormDescription>{description}</FormDescription> : null}
           <FormMessage />
         </FormItem>
       )}

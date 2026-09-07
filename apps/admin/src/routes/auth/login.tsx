@@ -5,8 +5,8 @@ import { useState } from "react"
 import { FormHeader, LoginForm } from "#/features/auth/components"
 import { useLoginForm } from "#/features/auth/hooks/form-handler"
 import { useLoginMutation } from "#/features/auth/hooks/mutation"
-import { authApiService } from "#/features/auth/services"
 import type { LoginSchema } from "#/features/auth/schemas"
+import { authApiService } from "#/features/auth/services"
 
 type LoginSearch = {
   redirect?: string

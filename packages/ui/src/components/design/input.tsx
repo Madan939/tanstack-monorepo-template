@@ -52,12 +52,14 @@ function isIconName(value: unknown): value is IconName {
 export interface InputProps
   extends Omit<React.ComponentProps<"input">, "size">,
     VariantProps<typeof inputVariants> {
-  leftIcon?: React.ReactNode | IconName
-  rightIcon?: React.ReactNode | IconName
+  /** Icon at start (RTL-aware) */
+  startIcon?: React.ReactNode | IconName
+  /** Icon at end (RTL-aware) */
+  endIcon?: React.ReactNode | IconName
   iconSize?: number
 }
 
-function Input({ className, type, size, leftIcon, rightIcon, iconSize, ...props }: InputProps) {
+function Input({ className, type, size, startIcon, endIcon, iconSize, ...props }: InputProps) {
   const resolvedIconSize = iconSize ?? getIconSize(size)
   const isDisabled = props.disabled
   const isInvalid = props["aria-invalid"] === true || props["aria-invalid"] === "true"
@@ -74,23 +76,42 @@ function Input({ className, type, size, leftIcon, rightIcon, iconSize, ...props 
         className,
       )}
     >
-      {leftIcon &&
-        (isIconName(leftIcon) ? (
-          <Icon name={leftIcon} size={resolvedIconSize} aria-hidden decorative className="shrink-0 text-muted-foreground" />
+      {startIcon &&
+        (isIconName(startIcon) ? (
+          <Icon
+            name={startIcon}
+            size={resolvedIconSize}
+            aria-hidden
+            decorative
+            className="shrink-0 text-muted-foreground"
+          />
         ) : (
-          <span className="inline-flex shrink-0 items-center text-muted-foreground">{leftIcon}</span>
+          <span className="inline-flex shrink-0 items-center text-muted-foreground">
+            {startIcon}
+          </span>
         ))}
 
-      <input type={type} data-slot="input" className={cn(inputElementVariants({ size }))} {...props} />
+      <input
+        type={type}
+        data-slot="input"
+        className={cn(inputElementVariants({ size }))}
+        {...props}
+      />
 
-      {rightIcon &&
-        (isIconName(rightIcon) ? (
-          <Icon name={rightIcon} size={resolvedIconSize} aria-hidden decorative className="shrink-0 text-muted-foreground" />
+      {endIcon &&
+        (isIconName(endIcon) ? (
+          <Icon
+            name={endIcon}
+            size={resolvedIconSize}
+            aria-hidden
+            decorative
+            className="shrink-0 text-muted-foreground"
+          />
         ) : (
-          <span className="inline-flex shrink-0 items-center text-muted-foreground">{rightIcon}</span>
+          <span className="inline-flex shrink-0 items-center text-muted-foreground">{endIcon}</span>
         ))}
     </div>
   )
 }
 
-export { Input, inputVariants, inputElementVariants }
+export { Input, inputElementVariants, inputVariants }

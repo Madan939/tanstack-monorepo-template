@@ -174,5 +174,5 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
 export type { TooltipContentProps }
+export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }

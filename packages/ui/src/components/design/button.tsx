@@ -5,15 +5,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 import * as React from "react"
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-  type TooltipContentProps,
-} from "./tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
 
-export type ButtonVariant = "default" | "outline" | "secondary" | "ghost" | "destructive" | "link"
+export type ButtonVariant =
+  | "default"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "destructive"
+  | "link"
+  | "info"
+  | "success"
+  | "warning"
+  | "neutral"
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -27,9 +31,15 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs",
         link: "text-primary underline-offset-4 hover:underline",
+        // International Standard — Semantic
+        info: "bg-info text-info-foreground hover:bg-info/90 shadow-xs", // blue — info, help
+        success: "bg-success text-success-foreground hover:bg-success/90 shadow-xs", // green — success, confirm
+        warning: "bg-warning text-warning-foreground hover:bg-warning/90 shadow-xs", // amber — warning, caution
+        neutral: "bg-neutral text-neutral-foreground hover:bg-neutral/80", // gray — neutral, cancel, disabled alt
       },
       size: {
-        default: "h-10 gap-2 px-5 has-data-[icon=inline-start]:pl-4 has-data-[icon=inline-end]:pr-4",
+        default:
+          "h-10 gap-2 px-5 has-data-[icon=inline-start]:pl-4 has-data-[icon=inline-end]:pr-4",
         xs: "h-7 gap-1 px-3 text-xs has-data-[icon=inline-start]:pl-2 has-data-[icon=inline-end]:pr-2 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-9 gap-1.5 px-4 has-data-[icon=inline-start]:pl-3 has-data-[icon=inline-end]:pr-3",
         lg: "h-11 gap-1.5 px-8 has-data-[icon=inline-start]:pl-5 has-data-[icon=inline-end]:pr-5",
@@ -71,22 +81,16 @@ type ButtonTooltipProps = {
   tooltipAlign?: React.ComponentProps<typeof TooltipContent>["align"]
   tooltipDelayDuration?: number
   tooltipSideOffset?: number
-  showTooltip?: boolean
-  tooltipText?: string
-  tooltipPrimaryText?: string
-  tooltipSecondaryText?: string
-  tooltipPlacement?: TooltipContentProps["placement"]
-  showTipArrow?: TooltipContentProps["showTipArrow"]
 }
 
 type ButtonIconProps = {
-  icon?: IconName | React.ReactNode
-  leftIcon?: IconName | React.ReactNode
-  rightIcon?: IconName | React.ReactNode
+  /** Icon at start (RTL-aware) */
+  startIcon?: IconName | React.ReactNode
+  /** Icon at end (RTL-aware) */
+  endIcon?: IconName | React.ReactNode
   iconSize?: number
   isPending?: boolean
   pendingText?: string
-  showLoading?: boolean
 }
 
 type ButtonProps = React.ComponentProps<"button"> &
@@ -107,19 +111,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       tooltipAlign,
       tooltipDelayDuration,
       tooltipSideOffset,
-      showTooltip,
-      tooltipText,
-      tooltipPrimaryText,
-      tooltipSecondaryText,
-      tooltipPlacement,
-      showTipArrow,
-      icon,
-      leftIcon,
-      rightIcon,
+      startIcon,
+      endIcon,
       iconSize,
       isPending,
       pendingText,
-      showLoading = true,
       children,
       disabled,
       ...props
@@ -153,20 +149,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     const isDisabled = disabled || isPending
-    const activeIcon = icon || leftIcon
-    const isIconOnly = !children && !!activeIcon && !rightIcon
+    const isIconOnly = !children && !!startIcon && !endIcon
 
     const content = asChild ? (
       children
     ) : isIconOnly ? (
-      renderIcon(activeIcon, "inline-start")
+      renderIcon(startIcon, "inline-start")
     ) : (
       <>
-        {leftIcon || icon
-          ? !isPending &&
-            renderIcon((leftIcon ?? icon) as IconName | React.ReactNode, "inline-start")
-          : null}
-        {isPending && showLoading && (
+        {startIcon && !isPending && renderIcon(startIcon, "inline-start")}
+        {isPending && (
           <span
             data-icon="inline-start"
             data-slot="button-icon"
@@ -181,14 +173,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </span>
         )}
         {isPending && pendingText ? pendingText : children}
-        {rightIcon && !isPending && renderIcon(rightIcon, "inline-end")}
+        {endIcon && !isPending && renderIcon(endIcon, "inline-end")}
       </>
     )
 
     // Normalize isPending icon fallback: use loader-like icon; we use svg spin via Icon if available else fallback
     const buttonNode = (
       <Comp
-        ref={ref as never}
+        ref={ref as React.Ref<HTMLButtonElement>}
         type="button"
         data-slot="button"
         data-variant={variant}
@@ -209,7 +201,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonVariants({
             variant,
-            size: isIconOnly ? (size === "default" ? "icon" : (size as never)) : size,
+            size: isIconOnly
+              ? size === "default"
+                ? "icon"
+                : (size as VariantProps<typeof buttonVariants>["size"])
+              : size,
             className,
           }),
         )}
@@ -220,11 +216,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       </Comp>
     )
 
-    const hasTooltip =
-      tooltip ||
-      (showTooltip && (tooltipText || tooltipPrimaryText || tooltipSecondaryText))
-
-    if (!hasTooltip) return buttonNode
+    if (!tooltip) return buttonNode
 
     // For disabled buttons, wrap in span to allow tooltip trigger
     const trigger = isDisabled ? (
@@ -241,29 +233,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       buttonNode
     )
 
-    // Chatboq API: tooltipText / primary / secondary with placement
-    if (showTooltip) {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-            <TooltipContent
-              placement={tooltipPlacement ?? "top"}
-              showTipArrow={showTipArrow ?? true}
-              tooltipPrimaryText={tooltipPrimaryText}
-              tooltipSecondaryText={tooltipSecondaryText}
-              side={tooltipSide}
-              align={tooltipAlign}
-              sideOffset={tooltipSideOffset}
-            >
-              {tooltipText}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
-    }
-
-    // Final-year API: tooltip as ReactNode
     return (
       <Tooltip delayDuration={tooltipDelayDuration ?? 300}>
         <TooltipTrigger asChild>{trigger}</TooltipTrigger>
