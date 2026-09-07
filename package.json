@@ -1,0 +1,47 @@
+{
+  "name": "start-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:admin": "turbo dev --filter=admin",
+    "dev:server": "turbo dev --filter=server",
+    "dev:super-admin": "turbo dev --filter=super-admin",
+    "dev:web": "turbo dev --filter=web",
+    "build:admin": "turbo build --filter=admin",
+    "build:server": "turbo build --filter=server",
+    "build:super-admin": "turbo build --filter=super-admin",
+    "build:web": "turbo build --filter=web",
+    "preview:admin": "turbo preview --filter=admin",
+    "preview:super-admin": "turbo preview --filter=super-admin",
+    "preview:web": "turbo preview --filter=web",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "typecheck": "turbo typecheck",
+    "icons:generate": "pnpm --filter @workspace/ui icons:generate",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
+    "turbo": "^2.8.17",
+    "typescript": "5.9.3"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx,json,jsonc,css}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  },
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss"
+    ]
+  }
+}

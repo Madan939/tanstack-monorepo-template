@@ -1,0 +1,133 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.5/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "apps/**/src/**/*",
+      "apps/**/vite.config.ts",
+      "apps/**/index.html",
+      "packages/**/src/**/*",
+      "packages/**/scripts/**/*",
+      "package.json",
+      "pnpm-workspace.yaml",
+      "turbo.json",
+      "**",
+      "!**/apps/admin/biome.json",
+      "!**/apps/super-admin/biome.json",
+      "!**/routeTree.gen.ts",
+      "!apps/**/src/routeTree.gen.ts",
+      "!apps/admin/src/routeTree.gen.ts",
+      "!apps/web/src/routeTree.gen.ts",
+      "!apps/super-admin/src/routeTree.gen.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "useImportType": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["packages/ui/src/components/primitives/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "useFocusableInteractive": "off",
+            "useAriaPropsForRole": "off",
+            "useKeyWithClickEvents": "off",
+            "noRedundantRoles": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off",
+            "noDocumentCookie": "off"
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/form/src/components/form-input-otp.tsx",
+        "packages/ui/src/components/primitives/slider.tsx",
+        "packages/ui/src/components/primitives/chart.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "**/routeTree.gen.ts",
+        "apps/admin/src/routeTree.gen.ts",
+        "apps/web/src/routeTree.gen.ts",
+        "apps/super-admin/src/routeTree.gen.ts"
+      ],
+      "formatter": { "enabled": false },
+      "linter": { "enabled": false },
+      "assist": {
+        "enabled": false,
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      }
+    }
+  ],
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
+    "formatter": {
+      "quoteStyle": "double",
+      "jsxQuoteStyle": "double",
+      "trailingCommas": "all",
+      "semicolons": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  },
+
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  }
+}

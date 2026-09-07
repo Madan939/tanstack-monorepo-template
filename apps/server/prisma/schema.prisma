@@ -1,0 +1,94 @@
+// Prisma schema for the authentication service.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+/// Application users. Passwords are stored as argon2id PHC strings.
+model User {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  /// Normalized (lowercase) email address.
+  email        String @unique
+  passwordHash String
+
+  fullName String?
+
+  emailVerified Boolean @default(false)
+
+  /// Soft-disable switch used by administrators instead of deletion.
+  isActive Boolean @default(true)
+
+  /// Brute-force protection: progressive account lockout.
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions Session[]
+  tokens   Token[]
+
+  @@map("users")
+}
+
+/// One row per issued refresh token. Tokens themselves are never stored in
+/// plaintext - only their SHA-256 hashes. Rotation keeps rows in the same
+/// `familyId`; presenting a revoked token from a family revokes the whole
+/// family (theft / replay detection).
+model Session {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String @db.Uuid
+  familyId String @db.Uuid
+
+  /// SHA-256 hex digest of the refresh token JWT.
+  refreshTokenHash String @unique
+
+  userAgent String?
+  ipAddress String?
+
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  /// Id of the session that superseded this one during rotation (audit trail).
+  replacedById String? @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+/// Single-use, hashed one-time tokens: email verification & password reset.
+model Token {
+  id     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String    @db.Uuid
+  type   TokenType
+
+  /// SHA-256 hex digest of the raw token delivered via email.
+  tokenHash String @unique
+
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId, type])
+  @@map("auth_tokens")
+}

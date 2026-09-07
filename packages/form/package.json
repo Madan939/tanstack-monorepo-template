@@ -1,0 +1,83 @@
+{
+  "name": "@workspace/form",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Accessible, type-safe React form primitives built on react-hook-form + zod — WAI-ARIA 1.2 & WCAG 2.1 AA compliant.",
+  "keywords": [
+    "react",
+    "form",
+    "react-hook-form",
+    "zod",
+    "a11y",
+    "wcag",
+    "aria",
+    "ui",
+    "shadcn"
+  ],
+  "license": "MIT",
+  "author": "Final Year Project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anomalyco/opencode"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "default": "./src/components/index.ts"
+    },
+    "./components/*": {
+      "types": "./src/components/*.tsx",
+      "default": "./src/components/*.tsx"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.ts",
+      "default": "./src/hooks/index.ts"
+    },
+    "./lib": {
+      "types": "./src/lib/index.ts",
+      "default": "./src/lib/index.ts"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./src/types.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@workspace/ui": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.65.0",
+    "radix-ui": "^1.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^6"
+  },
+  "peerDependenciesMeta": {
+    "radix-ui": {
+      "optional": true
+    }
+  }
+}

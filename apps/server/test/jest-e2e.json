@@ -1,0 +1,12 @@
+{
+  "testEnvironment": "node",
+  "rootDir": "..",
+  "roots": ["<rootDir>/test"],
+  "testRegex": ".e2e-spec.ts$",
+  "moduleFileExtensions": ["ts", "tsx", "js", "json"],
+  "transform": {
+    "^.+\\.ts$": ["ts-jest", { "tsconfig": "<rootDir>/tsconfig.json" }]
+  },
+  "testTimeout": 30000,
+  "clearMocks": true
+}

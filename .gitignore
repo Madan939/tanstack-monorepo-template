@@ -1,0 +1,50 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Builds / outputs
+dist
+dist-ssr
+build
+out
+.output
+.vinxi
+.nitro
+.tanstack
+.wrangler
+.vercel
+.netlify
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Caches / tooling
+.turbo
+.eslintcache
+*.tsbuildinfo
+coverage
+
+# Vite
+*.local
+
+# TanStack Router generated
+**/routeTree.gen.ts
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea
+__unconfig*
+todos.json

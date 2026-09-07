@@ -1,0 +1,46 @@
+{
+  "name": "@workspace/schema",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reusable, type-safe Zod primitives — email, password, phone, username, etc. for any system. WCAG & i18n ready.",
+  "keywords": [
+    "zod",
+    "validation",
+    "schema",
+    "common",
+    "typescript",
+    "a11y",
+    "reusable"
+  ],
+  "license": "MIT",
+  "author": "Final Year Project",
+  "sideEffects": false,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./common": {
+      "types": "./src/schemas/common.ts",
+      "default": "./src/schemas/common.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^6"
+  }
+}

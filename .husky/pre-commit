@@ -1,0 +1,5 @@
+echo "🔍 Running typecheck..."
+pnpm typecheck && echo "✅ Typecheck passed!" || exit 1
+
+echo "🔍 Running Biome check on staged files..."
+pnpm lint-staged && echo "✅ Biome checks passed!" || exit 1
