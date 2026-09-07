@@ -39,9 +39,9 @@ const typographyVariants = cva("text-foreground [a]:underline-offset-4 hover:[a]
       h1: "font-heading text-4xl font-bold tracking-tight md:text-5xl [&::selection]:bg-primary [&::selection]:text-primary-foreground",
       h2: "font-heading text-3xl font-semibold tracking-tight md:text-4xl",
       h3: "font-heading text-2xl font-semibold tracking-tight md:text-3xl",
-      h4: "text-xl font-semibold tracking-tight",
-      h5: "text-lg font-semibold tracking-tight",
-      h6: "text-sm font-semibold uppercase tracking-widest",
+      h4: "font-heading text-xl font-semibold tracking-tight",
+      h5: "font-heading text-lg font-semibold tracking-tight",
+      h6: "font-heading text-sm font-semibold uppercase tracking-widest",
       lead: "text-muted-foreground text-xl leading-relaxed",
       body: "text-base leading-7 [&:not(:first-child)]:mt-6",
       "body-sm": "text-sm leading-6 [&:not(:first-child)]:mt-4",
@@ -67,7 +67,18 @@ const typographyVariants = cva("text-foreground [a]:underline-offset-4 hover:[a]
       default: "",
       muted: "text-muted-foreground",
       primary: "text-primary",
+      secondary: "text-secondary-foreground",
+      accent: "text-accent-foreground",
       destructive: "text-destructive",
+      info: "text-info",
+      success: "text-success",
+      warning: "text-warning",
+      neutral: "text-neutral-foreground",
+      indigo: "text-indigo",
+      violet: "text-violet",
+      rose: "text-rose",
+      cyan: "text-cyan",
+      amber: "text-amber",
     },
     truncate: {
       true: "truncate",
@@ -77,6 +88,14 @@ const typographyVariants = cva("text-foreground [a]:underline-offset-4 hover:[a]
       true: "text-balance",
       false: "",
     },
+    pretty: {
+      true: "text-pretty",
+      false: "",
+    },
+    noMargin: {
+      true: "[&:not(:first-child)]:mt-0 my-0",
+      false: "",
+    },
   },
   defaultVariants: {
     variant: "body",
@@ -84,6 +103,8 @@ const typographyVariants = cva("text-foreground [a]:underline-offset-4 hover:[a]
     color: "default",
     truncate: false,
     balance: false,
+    pretty: false,
+    noMargin: false,
   },
 })
 
@@ -121,7 +142,19 @@ export type TypographyProps = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
 
 const TypographyBase = React.forwardRef<HTMLElement, TypographyProps>(
   (
-    { className, variant = "body", align, color, truncate, balance, as, asChild = false, ...props },
+    {
+      className,
+      variant = "body",
+      align,
+      color,
+      truncate,
+      balance,
+      pretty,
+      noMargin,
+      as,
+      asChild = false,
+      ...props
+    },
     ref,
   ) => {
     const Comp = asChild
@@ -133,7 +166,18 @@ const TypographyBase = React.forwardRef<HTMLElement, TypographyProps>(
         ref={ref as never}
         data-slot="typography"
         data-variant={variant}
-        className={cn(typographyVariants({ variant, align, color, truncate, balance, className }))}
+        className={cn(
+          typographyVariants({
+            variant,
+            align,
+            color,
+            truncate,
+            balance,
+            pretty,
+            noMargin,
+            className,
+          }),
+        )}
         {...props}
       />
     )
@@ -141,45 +185,96 @@ const TypographyBase = React.forwardRef<HTMLElement, TypographyProps>(
 )
 TypographyBase.displayName = "Typography"
 
-// Convenience aliases — ergonomic and discoverable, same styles as Typography
-const H1 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h1" {...props} />
-const H2 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h2" {...props} />
-const H3 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h3" {...props} />
-const H4 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h4" {...props} />
-const H5 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h5" {...props} />
-const H6 = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="h6" {...props} />
-const Display = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="display" {...props} />
-)
-const P = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="body" {...props} />
-const Lead = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="lead" {...props} />
-)
-const Large = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="large" {...props} />
-)
-const Small = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="small" {...props} />
-)
-const Muted = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="muted" {...props} />
-)
-const Blockquote = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="blockquote" {...props} />
-)
-const InlineCode = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="inlineCode" {...props} />
-)
-const Caption = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="caption" {...props} />
-)
-const Overline = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="overline" {...props} />
-)
-const Kbd = (props: Omit<TypographyProps, "variant">) => <TypographyBase variant="kbd" {...props} />
-const List = (props: Omit<TypographyProps, "variant">) => (
-  <TypographyBase variant="list" {...props} />
-)
+// Convenience aliases — ergonomic, ref-forwarding, and discoverable
+const H1 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h1" {...props} />
+))
+H1.displayName = "H1"
+
+const H2 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h2" {...props} />
+))
+H2.displayName = "H2"
+
+const H3 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h3" {...props} />
+))
+H3.displayName = "H3"
+
+const H4 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h4" {...props} />
+))
+H4.displayName = "H4"
+
+const H5 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h5" {...props} />
+))
+H5.displayName = "H5"
+
+const H6 = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="h6" {...props} />
+))
+H6.displayName = "H6"
+
+const Display = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="display" {...props} />
+))
+Display.displayName = "Display"
+
+const P = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="body" {...props} />
+))
+P.displayName = "P"
+
+const Lead = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="lead" {...props} />
+))
+Lead.displayName = "Lead"
+
+const Large = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="large" {...props} />
+))
+Large.displayName = "Large"
+
+const Small = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="small" {...props} />
+))
+Small.displayName = "Small"
+
+const Muted = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="muted" {...props} />
+))
+Muted.displayName = "Muted"
+
+const Blockquote = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="blockquote" {...props} />
+))
+Blockquote.displayName = "Blockquote"
+
+const InlineCode = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="inlineCode" {...props} />
+))
+InlineCode.displayName = "InlineCode"
+
+const Caption = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="caption" {...props} />
+))
+Caption.displayName = "Caption"
+
+const Overline = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="overline" {...props} />
+))
+Overline.displayName = "Overline"
+
+const Kbd = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="kbd" {...props} />
+))
+Kbd.displayName = "Kbd"
+
+const List = React.forwardRef<HTMLElement, Omit<TypographyProps, "variant">>((props, ref) => (
+  <TypographyBase ref={ref} variant="list" {...props} />
+))
+List.displayName = "List"
 
 type TypographyCompound = typeof TypographyBase & {
   // lowercase — requested API: <Typography.h1>
