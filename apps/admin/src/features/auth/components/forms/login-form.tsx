@@ -15,7 +15,7 @@ export function LoginForm({ isPending }: LoginFormProps) {
       <FormInput name="email" label="Email" required placeholder="you@example.com" autoComplete="email" />
       <FormPassword name="password" label="Password" required placeholder="Enter your password" autoComplete="current-password" />
       <CaptchaField onVerifiedChange={setCaptchaVerified} />
-      <Button type="submit" className="w-full" disabled={isPending || !captchaVerified}>
+      <Button type="submit" className="w-full"  disabled={isPending || !captchaVerified}>
         {isPending ? "Signing in..." : "Sign in"}
       </Button>
     </div>

@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-r
 import type { APIError } from "@workspace/api-client"
 import { type FieldError, FormWrapper, handleFieldError } from "@workspace/form"
 import { Typography } from "@workspace/ui/components/shared/typography"
+import { CONFIG } from "#/config"
 import { FormHeader, OnboardingForm } from "#/features/auth/components"
 import { useOnboardingForm } from "#/features/auth/hooks/form-handler"
 import { useOnboardingMutation } from "#/features/auth/hooks/mutation"
@@ -48,7 +49,7 @@ function OnboardingPage() {
           Back to sign in
         </Link>
         <a
-          href={`${import.meta.env.VITE_API_URL ?? "http://localhost:5000"}/user/me`}
+          href={`${CONFIG.API_URL}/user/me`}
           target="_blank"
           rel="noreferrer"
           className="text-primary underline-offset-4 hover:underline"

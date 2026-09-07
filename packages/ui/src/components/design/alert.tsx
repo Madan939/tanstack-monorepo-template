@@ -20,6 +20,15 @@ const alertVariants = cva(
           "bg-warning/15 text-warning-foreground border-warning/30 *:data-[slot=alert-description]:text-warning-foreground/80 [&_svg]:text-warning", // amber — warning, caution, pending review
         neutral:
           "bg-neutral/30 text-neutral-foreground border-neutral/40 *:data-[slot=alert-description]:text-neutral-foreground/80 [&_svg]:text-neutral-foreground", // gray — neutral, inactive, secondary info
+        // Extended Color Scales
+        indigo:
+          "bg-indigo-light text-indigo-light-foreground border-indigo-border *:data-[slot=alert-description]:text-indigo-light-foreground/80 [&_svg]:text-indigo",
+        violet:
+          "bg-violet-light text-violet-light-foreground border-violet-border *:data-[slot=alert-description]:text-violet-light-foreground/80 [&_svg]:text-violet",
+        rose: "bg-rose-light text-rose-light-foreground border-rose-border *:data-[slot=alert-description]:text-rose-light-foreground/80 [&_svg]:text-rose",
+        cyan: "bg-cyan-light text-cyan-light-foreground border-cyan-border *:data-[slot=alert-description]:text-cyan-light-foreground/80 [&_svg]:text-cyan",
+        amber:
+          "bg-amber-light text-amber-light-foreground border-amber-border *:data-[slot=alert-description]:text-amber-light-foreground/80 [&_svg]:text-amber",
       },
     },
     defaultVariants: { variant: "default" },

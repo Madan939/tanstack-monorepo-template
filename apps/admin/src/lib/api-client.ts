@@ -1,9 +1,9 @@
 import { type APIError, createApiClient } from "@workspace/api-client"
 import { toast } from "@workspace/ui"
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000"
+import { CONFIG } from "#/config"
 
-export const apiClient = createApiClient(API_URL)
+export const apiClient = createApiClient(CONFIG.API_URL)
 
 // Attach CSRF token for double-submit cookie pattern (required for POST /auth/refresh and POST /auth/logout)
 apiClient.interceptors.request.use((config) => {
@@ -11,7 +11,11 @@ apiClient.interceptors.request.use((config) => {
     const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/)
     const csrfToken = match ? decodeURIComponent(match[1]) : null
     if (csrfToken && config.headers) {
-      ;(config.headers as Record<string, string>)["x-csrf-token"] = csrfToken
+      if (typeof config.headers.set === "function") {
+        config.headers.set("x-csrf-token", csrfToken)
+      } else {
+        ;(config.headers as Record<string, string>)["x-csrf-token"] = csrfToken
+      }
     }
   }
   return config
@@ -30,9 +34,8 @@ async function tryRefresh(): Promise<boolean> {
       return false
     }
   }
-  const csrf = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/)?.[1]
-    ? decodeURIComponent(document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/)![1])
-    : null
+  const csrfMatch = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/)
+  const csrf = csrfMatch ? decodeURIComponent(csrfMatch[1]) : null
   refreshing = apiClient.post("/auth/refresh", null, {
     headers: csrf ? { "x-csrf-token": csrf } : {},
   } as never)
@@ -51,11 +54,16 @@ apiClient.interceptors.response.use(
   async (error: APIError) => {
     const status = error.response?.status ?? error.status
     const config = (error as unknown as { config?: Record<string, unknown> }).config as
-      | (Record<string, unknown> & { _retry?: boolean; url?: string })
+      | (Record<string, unknown> & {
+          _retry?: boolean
+          url?: string
+          headers?: Record<string, unknown> & { set?: (k: string, v: string) => void }
+        })
       | undefined
 
     // Silent refresh on 401 for non-auth endpoints (avoid loop on login/refresh itself)
-    const isAuthUrl = typeof config?.url === "string" && /\/auth\/(login|refresh|register)/.test(config.url)
+    const isAuthUrl =
+      typeof config?.url === "string" && /\/auth\/(login|refresh|register)/.test(config.url)
     if (status === 401 && config && !config._retry && !isAuthUrl) {
       config._retry = true
       const ok = await tryRefresh()
@@ -64,9 +72,18 @@ apiClient.interceptors.response.use(
         const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/)
         const csrfToken = match ? decodeURIComponent(match[1]) : null
         if (csrfToken && config.headers) {
-          ;(config.headers as Record<string, string>)["x-csrf-token"] = csrfToken
+          if (typeof config.headers.set === "function") {
+            config.headers.set("x-csrf-token", csrfToken)
+          } else {
+            ;(config.headers as Record<string, string>)["x-csrf-token"] = csrfToken
+          }
         }
         return apiClient.request(config as never)
+      }
+
+      // If refresh failed on a protected client route, redirect to login
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/auth/")) {
+        window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.href)}`
       }
     }
 

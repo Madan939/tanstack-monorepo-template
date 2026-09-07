@@ -18,6 +18,23 @@ export type ButtonVariant =
   | "success"
   | "warning"
   | "neutral"
+  | "soft-primary"
+  | "soft-secondary"
+  | "soft-destructive"
+  | "soft-info"
+  | "soft-success"
+  | "soft-warning"
+  | "soft-neutral"
+  | "indigo"
+  | "soft-indigo"
+  | "violet"
+  | "soft-violet"
+  | "rose"
+  | "soft-rose"
+  | "cyan"
+  | "soft-cyan"
+  | "amber"
+  | "soft-amber"
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -36,6 +53,37 @@ const buttonVariants = cva(
         success: "bg-success text-success-foreground hover:bg-success/90 shadow-xs", // green — success, confirm
         warning: "bg-warning text-warning-foreground hover:bg-warning/90 shadow-xs", // amber — warning, caution
         neutral: "bg-neutral text-neutral-foreground hover:bg-neutral/80", // gray — neutral, cancel, disabled alt
+        // Soft / Subtle Variants
+        "soft-primary":
+          "bg-primary-light text-primary-light-foreground hover:bg-primary-light/80 border-primary-border",
+        "soft-secondary":
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border",
+        "soft-destructive":
+          "bg-destructive-light text-destructive-light-foreground hover:bg-destructive-light/80 border-destructive-border",
+        "soft-info":
+          "bg-info-light text-info-light-foreground hover:bg-info-light/80 border-info-border",
+        "soft-success":
+          "bg-success-light text-success-light-foreground hover:bg-success-light/80 border-success-border",
+        "soft-warning":
+          "bg-warning-light text-warning-light-foreground hover:bg-warning-light/80 border-warning-border",
+        "soft-neutral":
+          "bg-neutral-light text-neutral-foreground hover:bg-neutral-light/80 border-border",
+        // Extended Color Scales
+        indigo: "bg-indigo text-indigo-foreground hover:bg-indigo/90 shadow-xs",
+        "soft-indigo":
+          "bg-indigo-light text-indigo-light-foreground hover:bg-indigo-light/80 border-indigo-border",
+        violet: "bg-violet text-violet-foreground hover:bg-violet/90 shadow-xs",
+        "soft-violet":
+          "bg-violet-light text-violet-light-foreground hover:bg-violet-light/80 border-violet-border",
+        rose: "bg-rose text-rose-foreground hover:bg-rose/90 shadow-xs",
+        "soft-rose":
+          "bg-rose-light text-rose-light-foreground hover:bg-rose-light/80 border-rose-border",
+        cyan: "bg-cyan text-cyan-foreground hover:bg-cyan/90 shadow-xs",
+        "soft-cyan":
+          "bg-cyan-light text-cyan-light-foreground hover:bg-cyan-light/80 border-cyan-border",
+        amber: "bg-amber text-amber-foreground hover:bg-amber/90 shadow-xs",
+        "soft-amber":
+          "bg-amber-light text-amber-light-foreground hover:bg-amber-light/80 border-amber-border",
       },
       size: {
         default:

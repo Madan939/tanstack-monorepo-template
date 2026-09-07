@@ -7,6 +7,10 @@ export {
 } from "./react-multi-select"
 export { ReactSelect, type ReactSelectOption, type ReactSelectProps } from "./react-select"
 export {
+  TruncatedText,
+  type TruncatedTextProps,
+} from "./truncated-text"
+export {
   Blockquote,
   Caption,
   H1,

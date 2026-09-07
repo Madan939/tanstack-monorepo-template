@@ -16,11 +16,31 @@ const badgeVariants = cva(
         destructive: "border-transparent bg-destructive text-destructive-foreground",
         outline: "border-border bg-background text-foreground",
         ghost: "border-transparent bg-muted text-muted-foreground",
-        // International Standard — Semantic
+        // International Standard — Solid Semantic
         info: "border-transparent bg-info text-info-foreground", // blue — informational, neutral context help
         success: "border-transparent bg-success text-success-foreground", // green — success, completion, verified
         warning: "border-transparent bg-warning text-warning-foreground", // amber — warning, caution, pending
         neutral: "border-transparent bg-neutral text-neutral-foreground", // gray — neutral, inactive, count
+        // Soft / Subtle Variants
+        "soft-primary": "border-primary-border bg-primary-light text-primary-light-foreground",
+        "soft-secondary": "border-border bg-secondary text-secondary-foreground",
+        "soft-destructive":
+          "border-destructive-border bg-destructive-light text-destructive-light-foreground",
+        "soft-info": "border-info-border bg-info-light text-info-light-foreground",
+        "soft-success": "border-success-border bg-success-light text-success-light-foreground",
+        "soft-warning": "border-warning-border bg-warning-light text-warning-light-foreground",
+        "soft-neutral": "border-border bg-neutral-light text-neutral-foreground",
+        // Extended Color Scales
+        indigo: "border-transparent bg-indigo text-indigo-foreground",
+        "soft-indigo": "border-indigo-border bg-indigo-light text-indigo-light-foreground",
+        violet: "border-transparent bg-violet text-violet-foreground",
+        "soft-violet": "border-violet-border bg-violet-light text-violet-light-foreground",
+        rose: "border-transparent bg-rose text-rose-foreground",
+        "soft-rose": "border-rose-border bg-rose-light text-rose-light-foreground",
+        cyan: "border-transparent bg-cyan text-cyan-foreground",
+        "soft-cyan": "border-cyan-border bg-cyan-light text-cyan-light-foreground",
+        amber: "border-transparent bg-amber text-amber-foreground",
+        "soft-amber": "border-amber-border bg-amber-light text-amber-light-foreground",
       },
       size: {
         default: "px-2 py-0.5 text-xs",
@@ -48,6 +68,23 @@ const badgeDotVariants = cva("shrink-0 rounded-full bg-current", {
       success: "text-success",
       warning: "text-warning",
       neutral: "text-neutral-foreground",
+      "soft-primary": "text-primary-light-foreground",
+      "soft-secondary": "text-secondary-foreground",
+      "soft-destructive": "text-destructive-light-foreground",
+      "soft-info": "text-info-light-foreground",
+      "soft-success": "text-success-light-foreground",
+      "soft-warning": "text-warning-light-foreground",
+      "soft-neutral": "text-neutral-foreground",
+      indigo: "text-indigo",
+      "soft-indigo": "text-indigo-light-foreground",
+      violet: "text-violet",
+      "soft-violet": "text-violet-light-foreground",
+      rose: "text-rose",
+      "soft-rose": "text-rose-light-foreground",
+      cyan: "text-cyan",
+      "soft-cyan": "text-cyan-light-foreground",
+      amber: "text-amber",
+      "soft-amber": "text-amber-light-foreground",
     },
     size: {
       default: "size-1.5",

@@ -3,7 +3,6 @@ import { getRequest } from "@tanstack/react-start/server"
 import { z } from "zod"
 import { CONFIG } from "#/config"
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000"
 
 const sessionUserSchema = z.object({
   id: z.string(),
@@ -26,7 +25,7 @@ export const fetchSession = createServerFn({ method: "GET" }).handler(async (): 
   const cookie = request.headers.get("cookie")
 
   const doFetch = async (cookieHeader: string | null) =>
-    fetch(`${API_URL}${CONFIG.ENDPOINTS.AUTH.ME}`, {
+    fetch(`${CONFIG.API_URL}${CONFIG.ENDPOINTS.AUTH.ME}`, {
       headers: {
         Accept: "application/json",
         ...(cookieHeader ? { Cookie: cookieHeader } : {}),
@@ -40,7 +39,7 @@ export const fetchSession = createServerFn({ method: "GET" }).handler(async (): 
     if (res.status === 401 && cookie) {
       const csrf = getCsrfFromCookie(cookie)
       try {
-        const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
+        const refreshRes = await fetch(`${CONFIG.API_URL}/auth/refresh`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
