@@ -42,7 +42,7 @@ import type { ZodType } from "zod"
 // ISO: single responsibility, Liskov substitutable for FormProvider
 // Supports both patterns:
 //  1. <Form {...form}><form onSubmit={form.handleSubmit(...)}> — classic
-//  2. <FormWrapper useFormMethods={form} formProps={{ onSubmit: handleSubmit }}> — your AccountInformationPage pattern
+//  2. <FormWrapper form={form} formProps={{ onSubmit: handleSubmit }}> — page layout pattern
 // ===========================================================================
 
 /**
@@ -105,13 +105,13 @@ export { useRHFForm as useFormClassic }
  * Wraps `FormProvider` + native `<form>` so you can compose header / scroll area / footer.
  *
  * @example
- * <FormWrapper useFormMethods={form} formProps={{ onSubmit: handleSubmit }} className="h-full flex flex-col">
+ * <FormWrapper form={form} formProps={{ onSubmit: handleSubmit }} className="h-full flex flex-col">
  *   <section className="px-11 flex-1 overflow-y-auto"><AccountInformationForm /></section>
  *   <div className="h-20 border-t flex justify-end"><Button type="submit">Update</Button></div>
  * </FormWrapper>
  *
  * Handles:
- * - `useFormMethods` (aka `form`) from `useForm` above
+ * - `form` from `useForm` above
  * - `formProps` spread to `<form>` (onSubmit, onReset, etc.)
  * - `className` for layout (flex, overflow, etc.)
  * - `noValidate` by default (prevents native browser validation, uses Zod)

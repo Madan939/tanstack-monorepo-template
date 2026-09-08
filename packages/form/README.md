@@ -24,12 +24,9 @@ pnpm add @workspace/form @workspace/schema @workspace/ui react-hook-form @hookfo
 ## Quick start
 
 ```tsx
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Form } from "@workspace/form"
-import { FormInput, FormCheckbox } from "@workspace/form"
+import { Form, FormCheckbox, FormInput, useForm } from "@workspace/form"
 import { Button } from "@workspace/ui/components/primitives/button"
+import { z } from "zod"
 
 const schema = z.object({
   fullName: z.string().min(1).max(128),
@@ -39,8 +36,11 @@ const schema = z.object({
 type Values = z.infer<typeof schema>
 
 export function MyForm() {
+  // Package `useForm` builds the zodResolver for you, defaults to
+  // mode: "onTouched", reValidateMode: "onChange". Pass `resolver`
+  // explicitly to override, `values` to resync from an API query.
   const form = useForm<Values>({
-    resolver: zodResolver(schema),
+    schema,
     defaultValues: { fullName: "", email: "", agree: false },
   })
 
@@ -67,13 +67,65 @@ export function MyForm() {
 
 ### Provided components
 
-`Form`, `FormWrapper`, `useForm`/`useFormClassic`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField` + typed wrappers: `FormInput`, `FormTextarea`, `FormCheckbox`, `FormSwitch`, `FormRadioGroup`, `FormSlider`/`FormRangeSlider`, `FormSelect`, `FormMultiSelect`, `FormInputOTP`, `FormCalendar`.
+`Form`, `FormWrapper` (+ `FormWrapper.Content` / `FormWrapper.Footer` layout helpers), `useForm`, `useFormClassic` (raw react-hook-form passthrough, no schema handling), `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`, `handleFieldError` + `FieldError` type for server-side errors, plus typed wrappers: `FormInput`, `FormTextarea`, `FormPassword`, `FormCheckbox`, `FormSwitch`, `FormRadioGroup`, `FormSlider`/`FormRangeSlider`, `FormSelect`, `FormNativeSelect`, `FormMultiSelect`, `FormPhoneInput`, `FormDatePicker`, `FormCalendar`, `FormInputOTP`, `FormAttachment`.
 
-All wrappers are generic: `<FormInput<Values> name="email" />` infers `name` from your schema type `Values`.
+All wrappers are generic: `<FormInput<Values> name="email" />` infers `name` from your schema type `Values`. (Inside a `FormProvider` the generic can be omitted — it is inferred from context.)
 
-### Flexible usage — `useForm({ schema })` + `FormWrapper`
+### Typical usage in this repo — schema → hook → component → route
 
-The package now supports your `AccountInformationPage` pattern directly. `useForm` accepts `schema` (no manual `zodResolver` needed) and `values` for controlled sync from an API (e.g., `useMeQuery`). `FormWrapper` composes `FormProvider` + `<form>` so you can layout header / scroll area / footer:
+`apps/admin` auth screens follow one pattern (see `apps/admin/src/features/auth/` + `routes/auth/login.tsx`):
+
+1. **Schema** (`features/<domain>/schemas/`): zod object, composed from `@workspace/schema` primitives. Single source of truth; export both schema and `z.infer` type.
+2. **Form hook** (`features/<domain>/hooks/form-handler/use-<x>.form.ts`): calls package `useForm<Schema>({ schema, defaultValues })`, returns `{ form }`. Add `values` when resyncing from a query (e.g. profile data).
+3. **Presentational component** (`features/<domain>/components/forms/<x>-form.tsx`): renders typed wrappers only (`<FormInput name="email" …/>`), no form instance, no mutation. Receives UI state (`isPending`) via props.
+4. **Route/page**: wires hook + mutation, builds `form.handleSubmit(onValid)`, maps API failures with `handleFieldError(form, errors)` (field-level) or `form.setError(name, { type: "server", message })` (form-level), renders `<FormWrapper form={form} formProps={{ onSubmit: handleSubmit }}>`.
+
+```tsx
+// 1. schemas/login.ts
+export const loginSchema = z.object({ email: emailSchema, password: z.string().min(1).max(128) })
+export type LoginSchema = z.infer<typeof loginSchema>
+
+// 2. hooks/form-handler/use-login.form.ts
+export function useLoginForm() {
+  const form = useForm<LoginSchema>({ schema: loginSchema, defaultValues: { email: "", password: "" } })
+  return { form }
+}
+
+// 3. components/forms/login-form.tsx — presentational only
+export function LoginForm({ isPending }: { isPending?: boolean }) {
+  return (
+    <div className="grid gap-4">
+      <FormInput name="email" label="Email" required autoComplete="email" />
+      <FormPassword name="password" label="Password" required autoComplete="current-password" />
+      <Button type="submit" disabled={isPending}>Sign in</Button>
+    </div>
+  )
+}
+
+// 4. routes/auth/login.tsx — wiring
+const { form } = useLoginForm()
+const loginMutation = useLoginMutation()
+const handleSubmit = form.handleSubmit((data) =>
+  loginMutation.mutate(data, {
+    onError: (err: APIError<FieldError<LoginSchema>>) => {
+      const fieldErrors = err.response?.data.errors
+      if (fieldErrors) return handleFieldError(form, fieldErrors) // 422 → inline field errors
+      form.setError("password", { type: "server", message: "Invalid credentials" })
+    },
+  }),
+)
+return (
+  <FormWrapper form={form} formProps={{ onSubmit: handleSubmit }} className="grid gap-4">
+    <LoginForm isPending={loginMutation.isPending} />
+  </FormWrapper>
+)
+```
+
+`handleFieldError(form, errors, fieldMap?)` sets API-returned `{ [field]: message }` objects onto the form (with optional API-key → form-path mapping). `FieldError<T>` types that payload.
+
+### Page-level layouts — `FormWrapper`
+
+`FormWrapper` composes `FormProvider` + `<form>` so a page can lay out header / scroll area / footer. Actual props: `form` (the `useForm` return), `formProps` (spread onto `<form>` — put `onSubmit` here), `className`, `id`, `noValidate` (defaults `true`, keeps Zod as the single validator), and `children` (nodes or a render-prop `(form) => …` for form-state access). Layout helpers: `FormWrapper.Content` (scrollable section) and `FormWrapper.Footer` (sticky action bar).
 
 ```tsx
 import { AccountInformationForm } from '@/features/settings/account-settings/components';
@@ -125,7 +177,7 @@ export default function AccountInformationPage() {
   );
   return (
     <FormWrapper
-      useFormMethods={accountInformationForm.form} // also accepts `form={...}` alias
+      form={accountInformationForm.form}
       formProps={{ onSubmit: handleSubmit }}
       className="h-full pt-6 flex flex-col overflow-hidden"
     >
@@ -146,20 +198,11 @@ export default function AccountInformationPage() {
 }
 ```
 
-#### Even easier — new flexible props (no `handleSubmit` boilerplate)
-
-`FormWrapper` now also accepts `onSubmit` directly (auto-wrapped with `handleSubmit`) and can even create the form for you:
+#### Layout helpers + render-prop (all supported)
 
 ```tsx
-// 1. Easiest — no useForm outside, no handleSubmit
-<FormWrapper
-  schema={accountInformationSchema}
-  defaultValues={defaultValues}
-  values={values}
-  onSubmit={(data) => accountInformationMutation.mutate(data)}
-  onError={(errors) => console.error(errors)}
-  className="h-full flex flex-col"
->
+// 1. Content / Footer compounds for page layouts
+<FormWrapper form={form} formProps={{ onSubmit: handleSubmit }} className="h-full flex flex-col">
   <FormWrapper.Content className="px-11 flex-1 overflow-y-auto">
     <AccountInformationForm />
   </FormWrapper.Content>
@@ -169,13 +212,8 @@ export default function AccountInformationPage() {
   </FormWrapper.Footer>
 </FormWrapper>
 
-// 2. Direct onSubmit (instead of formProps)
-<FormWrapper form={form} onSubmit={(data) => mutate(data)} onError={console.error}>
-  <AccountInformationForm />
-</FormWrapper>
-
-// 3. Render-prop for easy access to form state inside
-<FormWrapper form={form} onSubmit={handleSubmit}>
+// 2. Render-prop for easy access to form state inside
+<FormWrapper form={form} formProps={{ onSubmit: handleSubmit }}>
   {(form) => (
     <>
       <section><PageHeader {...} /></section>
@@ -183,14 +221,9 @@ export default function AccountInformationPage() {
     </>
   )}
 </FormWrapper>
-
-// 4. Aliases — all work: `form`, `useFormMethods`, `methods`
-<FormWrapper form={form} ... />
-<FormWrapper useFormMethods={form} ... />
-<FormWrapper methods={form} ... />
 ```
 
-Classic `<Form {...form}><form>` still works — `useForm` also accepts `resolver` passthrough for full flexibility:
+Classic `<Form {...form}><form>` + manual `zodResolver` still works — `useForm` also accepts `resolver` passthrough (explicit resolver wins over `schema`):
 
 ---
 

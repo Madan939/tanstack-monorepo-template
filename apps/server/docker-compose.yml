@@ -1,0 +1,46 @@
+# Local run: copy .env.example to .env, set JWT secrets, then:
+#   docker compose up --build
+# The server validates required env on boot (see src/config/env.validation.ts).
+
+name: auth-server
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: ../..
+      dockerfile: apps/server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      # Compose `environment` wins over `env_file`, so the container
+      # always talks to the composed postgres regardless of local .env.
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/auth_db?schema=public
+    ports:
+      - "5000:5000"
+
+volumes:
+  pgdata:

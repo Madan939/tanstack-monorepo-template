@@ -1,0 +1,11 @@
+# Kept at the build-context root: `docker build -f apps/server/Dockerfile .`
+# only honours .dockerignore from the context root, not from apps/server/.
+node_modules
+.pnpm-store
+apps/*/node_modules
+apps/*/dist
+.turbo
+.git
+.env
+coverage
+*.tsbuildinfo
